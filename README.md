@@ -9,6 +9,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 | Gra                           | Czego uczy                                                                               | Technologia                                                       | Uruchomienie                                                               |
 | ----------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | [Kaczy Kod](games/kaczy-kod/) | Programowanie z klocków: 32 przygody, while, if/else, własne funkcje i zagadki; od 7 lat | React, TypeScript, Vinext/Vite; eksport do Pythona dla Microducka | [Instrukcja](games/kaczy-kod/README.md#uruchomienie-lokalne-macos-i-linux) |
+| [Sklepik Kucyków](games/sklepik-kucykow/) | Dodawanie, odejmowanie, mnożenie i dzielenie; 3 poziomy, karty w pary; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/sklepik-kucykow/README.md#uruchomienie-lokalne) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 
@@ -35,6 +36,9 @@ gry-naukowe/
     ├── kaczy-kod/
     │   ├── README.md
     │   ├── package.json
+    │   └── ...
+    ├── sklepik-kucykow/
+    │   ├── README.md
     │   └── ...
     └── kolejna-gra/         # własna technologia i własny README
 ```
