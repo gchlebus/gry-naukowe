@@ -42,6 +42,12 @@ import {
   starterProgram,
   validCompleted,
   conditionHolds,
+  childBlocks,
+  createExecution,
+  stepExecution,
+  learningCode,
+  type Execution,
+  type Condition,
   FREE,
   initialWorld,
   advance,
@@ -104,6 +110,30 @@ const META = {
     sub: "Sprawdź przed sobą",
     icon: Footprints,
     color: "green",
+  },
+  while: {
+    label: "Dopóki (while)",
+    sub: "Sprawdzaj po każdym powtórzeniu",
+    icon: Repeat2,
+    color: "teal",
+  },
+  ifelse: {
+    label: "Jeśli / inaczej",
+    sub: "Dwie odpowiedzi · if/else",
+    icon: Settings2,
+    color: "purple",
+  },
+  define: {
+    label: "Stwórz funkcję",
+    sub: "Nazwij własny przepis",
+    icon: Code2,
+    color: "indigo",
+  },
+  call: {
+    label: "Użyj funkcji",
+    sub: "Wykonaj swój przepis",
+    icon: Play,
+    color: "indigo",
   },
 };
 function Duck({
@@ -484,11 +514,62 @@ function Garden({
         }}
       >
         <circle r="26" fill="#9ac3b3" opacity=".28" />
-        <g transform={`rotate(${w.dir * 90})`}>
-          <path d="m0-34-6 8h12Z" fill="#337359" />
-        </g>
-        <g transform="translate(-28,-39) scale(.56)" filter="url(#shadow)">
-          <Duck embedded />
+        <g
+          className="robot-heading"
+          data-heading={w.dir}
+          style={{
+            transform: `rotate(${w.angle}deg)`,
+            transition: "transform .28s ease-in-out",
+          }}
+        >
+          <path d="M-15-24 0-35 15-24" fill="#74a27c" opacity=".5" />
+          <ellipse
+            cy="14"
+            rx="18"
+            ry="13"
+            fill="#a7beb2"
+            stroke="#587463"
+            strokeWidth="1.5"
+          />
+          <rect
+            x="-22"
+            y="14"
+            width="15"
+            height="10"
+            rx="4"
+            fill="#edaf48"
+            stroke="#c98b32"
+          />
+          <rect
+            x="7"
+            y="14"
+            width="15"
+            height="10"
+            rx="4"
+            fill="#edaf48"
+            stroke="#c98b32"
+          />
+          <rect
+            x="-20"
+            y="-17"
+            width="40"
+            height="32"
+            rx="11"
+            fill="#fffdf0"
+            stroke="#526f60"
+            strokeWidth="1.8"
+          />
+          <rect x="-15" y="-10" width="30" height="14" rx="6" fill="#d8e8dc" />
+          <circle cx="-8" cy="-5" r="3.5" fill="#285641" />
+          <circle cx="8" cy="-5" r="3.5" fill="#285641" />
+          <path
+            d="M-10-17v-7q10-8 20 0v7Z"
+            fill="#f4b74f"
+            stroke="#cc9238"
+            strokeWidth="1.5"
+          />
+          <path d="M-7-23H7" stroke="#d99b3c" strokeWidth="1.5" />
+          <rect x="-7" y="8" width="14" height="5" rx="2.5" fill="#94af9c" />
         </g>
         {active === "quack" && (
           <g>
@@ -552,6 +633,7 @@ function updateTree(
       {
         ...b,
         children: b.children ? updateTree(b.children, id, fn) : undefined,
+        otherwise: b.otherwise ? updateTree(b.otherwise, id, fn) : undefined,
       },
     ];
   });
@@ -559,7 +641,7 @@ function updateTree(
 function depthOf(bs: Block[], id: string, depth = 0): number {
   for (const b of bs) {
     if (b.id === id) return depth;
-    const d = depthOf(b.children ?? [], id, depth + 1);
+    const d = depthOf(childBlocks(b), id, depth + 1);
     if (d >= 0) return d;
   }
   return -1;
@@ -575,7 +657,42 @@ function moveTree(bs: Block[], id: string, delta: number): Block[] {
   return bs.map((b) => ({
     ...b,
     children: b.children ? moveTree(b.children, id, delta) : undefined,
+    otherwise: b.otherwise ? moveTree(b.otherwise, id, delta) : undefined,
   }));
+}
+const CONDITIONS: Record<Condition, string> = {
+  clear: "wolna droga",
+  flower: "stoję na kwiatku",
+  notGoal: "nie ma mnie na gwiazdce",
+};
+const CONTAINERS: Block["type"][] = [
+  "repeat",
+  "flower",
+  "clear",
+  "while",
+  "ifelse",
+  "define",
+];
+function paletteTypes(lesson: Lesson): Block["type"][] {
+  const base: Block["type"][] = [
+    "forward",
+    "left",
+    "right",
+    "quack",
+    "wait",
+    "repeat",
+    "flower",
+    ...(lesson.id === 0 || lesson.id >= 15 ? ["clear" as const] : []),
+  ];
+  const extra: Block["type"][] =
+    lesson.id === 0 || lesson.id >= 28
+      ? ["define", "call", "while", "ifelse"]
+      : lesson.id >= 25
+        ? ["ifelse", "while"]
+        : lesson.id >= 21
+          ? ["while"]
+          : [];
+  return [...extra, ...base];
 }
 export default function Home() {
   const [chapter, setChapter] = useState(0);
@@ -588,6 +705,10 @@ export default function Home() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeType, setActiveType] = useState<string | null>(null);
   const [target, setTarget] = useState<string | null>(null);
+  const [targetBranch, setTargetBranch] = useState<"children" | "otherwise">(
+    "children",
+  );
+  const [nameDrafts, setNameDrafts] = useState<Record<string, string>>({});
   const [modal, setModal] = useState<"robot" | "parents" | "help" | null>(null);
   const [hint, setHint] = useState(false);
   const [sound, setSound] = useState(true);
@@ -598,8 +719,7 @@ export default function Home() {
   const [mapOpen, setMapOpen] = useState(false);
   const [storageWarning, setStorageWarning] = useState(false);
   const worlds = useRef<World>(world);
-  const program = useRef<Instruction[]>([]);
-  const cursor = useRef(0);
+  const execution = useRef<Execution | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const allPrograms = useRef<Record<string, Block[]>>({});
   const importer = useRef<HTMLInputElement>(null);
@@ -698,8 +818,7 @@ export default function Home() {
     const w = initialWorld(lesson);
     worlds.current = w;
     setWorld(w);
-    cursor.current = 0;
-    program.current = [];
+    execution.current = null;
     setMessage("");
     setWon(false);
   }
@@ -712,13 +831,14 @@ export default function Home() {
     const w = initialWorld(l);
     setWorld(w);
     worlds.current = w;
-    cursor.current = 0;
-    program.current = [];
+    execution.current = null;
     setTarget(null);
     setHint(false);
     setMessage("");
     setWon(false);
     setMapOpen(false);
+    setTab("blocks");
+    setNameDrafts({});
   }
   function edited(next: Block[]) {
     reset();
@@ -728,36 +848,89 @@ export default function Home() {
     if (runningRef.current) return;
     if (
       target &&
-      depthOf(blocks, target) >= 2 &&
-      (type === "repeat" || type === "flower" || type === "clear")
+      depthOf(blocks, target) >= 3 &&
+      CONTAINERS.includes(type) &&
+      type !== "define"
     ) {
       setMessage(
-        "Wystarczą trzy poziomy klocków. Dodaj zwykłe polecenie albo wróć na koniec programu.",
+        "Wystarczą cztery poziomy klocków. Dodaj zwykłe polecenie albo wróć na koniec programu.",
       );
       return;
     }
     if (countBlocks(blocks) >= 60) {
-      setMessage("Masz już 60 klocków. Spróbuj użyć pętli!");
+      setMessage("Masz już 60 klocków. Spróbuj użyć pętli lub funkcji.");
       return;
     }
+    const definitions = blocks.filter((b) => b.type === "define");
+    const owner = target
+      ? definitions.find(
+          (b) => b.id === target || depthOf(childBlocks(b), target) >= 0,
+        )
+      : undefined;
+    const available = definitions.filter((b) => b.id !== owner?.id);
+    if (type === "call" && !available.length) {
+      setMessage(
+        definitions.length
+          ? "Dodaj wywołanie poza swoją definicją. Kliknij „Wróć na koniec programu”."
+          : "Najpierw kliknij „Stwórz funkcję”, nazwij ją i dodaj do niej polecenia.",
+      );
+      return;
+    }
+    let name = "moj_przepis",
+      n = 2;
+    while (definitions.some((b) => b.name === name))
+      name = `moj_przepis_${n++}`;
     const b: Block = {
       id: crypto.randomUUID(),
       type,
-      ...(type === "repeat"
-        ? { count: 2, children: [] }
-        : type === "flower" || type === "clear"
-          ? { children: [] }
-          : {}),
+      ...(CONTAINERS.includes(type) ? { children: [] } : {}),
+      ...(type === "repeat" ? { count: 2 } : {}),
+      ...(type === "while" ? { condition: "clear" as const } : {}),
+      ...(type === "ifelse"
+        ? { condition: "flower" as const, otherwise: [] }
+        : {}),
+      ...(type === "define" ? { name } : {}),
+      ...(type === "call" ? { name: available[0]?.name } : {}),
     };
-    const next = target
-      ? updateTree(blocks, target, (p) => ({
-          ...p,
-          children: [...(p.children ?? []), b],
-        }))
-      : [...blocks, b];
+    const next =
+      target && type !== "define"
+        ? updateTree(blocks, target, (p) => ({
+            ...p,
+            [targetBranch]: [...(p[targetBranch] ?? []), b],
+          }))
+        : [...blocks, b];
     edited(next);
-    if (type === "repeat" || type === "flower" || type === "clear")
+    if (CONTAINERS.includes(type)) {
       setTarget(b.id);
+      setTargetBranch("children");
+    }
+  }
+  function renameFunction(id: string, value: string) {
+    const definition = blocks.find((b) => b.id === id);
+    if (!definition) return;
+    const oldName = definition.name;
+    try {
+      validateProgram([{ type: "define", name: value, children: [] }]);
+      function rename(list: Block[]): Block[] {
+        return list.map((b) => ({
+          ...b,
+          name:
+            b.id === id || (b.type === "call" && b.name === oldName)
+              ? value
+              : b.name,
+          children: b.children ? rename(b.children) : undefined,
+          otherwise: b.otherwise ? rename(b.otherwise) : undefined,
+        }));
+      }
+      edited(rename(blocks));
+    } catch (e) {
+      setMessage((e as Error).message);
+    }
+    setNameDrafts((d) => {
+      const next = { ...d };
+      delete next[id];
+      return next;
+    });
   }
   function beep() {
     if (!sound) return;
@@ -788,39 +961,38 @@ export default function Home() {
       setCompleted((v) => (v.includes(lesson.id) ? v : [...v, lesson.id]));
   }
   function tick(auto: boolean) {
-    const ins = program.current[cursor.current++];
-    if (!ins) {
-      finish(worlds.current);
-      return;
-    }
-    setActiveId(ins.id);
-    setActiveType(ins.type);
-    if (ins.type === "check") {
-      if (!conditionHolds(worlds.current, lesson, ins.condition))
-        cursor.current += ins.skip ?? 0;
-    } else {
-      const w = advance(worlds.current, ins.type, lesson);
-      worlds.current = w;
-      setWorld(w);
-      if (ins.type === "quack") beep();
-      if (w.bump) {
+    try {
+      if (!execution.current) {
+        finish(worlds.current);
+        return;
+      }
+      const step = stepExecution(execution.current, worlds.current, lesson);
+      worlds.current = step.world;
+      setWorld(step.world);
+      setActiveId(step.id);
+      setActiveType(step.type);
+      if (step.type === "quack") beep();
+      if (step.world.bump) {
         halt();
-        cursor.current = 0;
-        program.current = [];
+        execution.current = null;
         setMessage(
-          "Tu jest przeszkoda! Kaczka się zatrzymała. Zmień trasę i spróbuj jeszcze raz.",
+          "Tu jest przeszkoda! Popraw trasę albo sprawdź drogę przed krokiem.",
         );
         return;
       }
+      if (step.done) {
+        timer.current = setTimeout(
+          () => finish(worlds.current),
+          auto ? speed : 200,
+        );
+        return;
+      }
+      if (auto) timer.current = setTimeout(() => tick(true), speed);
+    } catch (e) {
+      halt();
+      execution.current = null;
+      setMessage((e as Error).message);
     }
-    if (cursor.current >= program.current.length) {
-      timer.current = setTimeout(
-        () => finish(worlds.current),
-        auto ? speed : 200,
-      );
-      return;
-    }
-    if (auto) timer.current = setTimeout(() => tick(true), speed);
   }
   function run(step = false) {
     if (runningRef.current) return;
@@ -829,23 +1001,23 @@ export default function Home() {
       timer.current = null;
     }
     if (!blocks.length) {
-      setMessage("Kliknij kolorowy klocek „Idź do przodu”, żeby zacząć!");
+      setMessage("Kliknij kolorowy klocek, żeby zacząć!");
       return;
     }
     try {
       if (
-        cursor.current === 0 ||
-        !program.current.length ||
-        cursor.current >= program.current.length
+        !execution.current ||
+        execution.current.pc >= execution.current.code.length
       ) {
-        program.current = compile(blocks);
-        cursor.current = 0;
+        execution.current = createExecution(blocks);
         const w = initialWorld(lesson);
         worlds.current = w;
         setWorld(w);
       }
-      if (!program.current.length) {
-        setMessage("Pętla jest pusta. Dodaj do niej klocek.");
+      if (!execution.current.code.length) {
+        setMessage(
+          "Sam przepis jeszcze niczego nie robi. Dodaj „Użyj funkcji” pod definicją albo wypełnij pustą pętlę.",
+        );
         return;
       }
       setMessage("");
@@ -857,6 +1029,7 @@ export default function Home() {
       tick(!step);
     } catch (e) {
       halt();
+      execution.current = null;
       setMessage((e as Error).message);
     }
   }
@@ -906,12 +1079,65 @@ export default function Home() {
     return bs.map((b, i) => {
       const m = META[b.type],
         Icon = m.icon,
-        container =
-          b.type === "repeat" || b.type === "flower" || b.type === "clear";
+        container = CONTAINERS.includes(b.type);
+      function branch(which: "children" | "otherwise") {
+        const selected = target === b.id && targetBranch === which;
+        return (
+          <div
+            className={`nested ${selected ? "insertion-selected" : ""} ${which === "otherwise" ? "else-branch" : ""}`}
+          >
+            {b.type === "ifelse" && (
+              <div className="branch-label">
+                {which === "children" ? "JEŚLI — TAK" : "INACZEJ — NIE"}
+              </div>
+            )}
+            {renderBlocks(b[which] ?? [], depth + 1)}
+            {depth < 4 && (
+              <button
+                className="insert"
+                disabled={running}
+                onClick={() => {
+                  setTarget(selected ? null : b.id);
+                  setTargetBranch(which);
+                }}
+              >
+                {selected ? (
+                  <>
+                    <Check size={14} />
+                    Gotowe
+                  </>
+                ) : (
+                  <>
+                    <Plus size={14} />
+                    {b.type === "ifelse"
+                      ? which === "children"
+                        ? "Dodaj do „jeśli”"
+                        : "Dodaj do „inaczej”"
+                      : "Dodaj do środka"}
+                  </>
+                )}
+              </button>
+            )}
+            {!b[which]?.length && (
+              <small>
+                {b.type === "define"
+                  ? "Tu napisz przepis. Wykona się, gdy użyjesz funkcji."
+                  : b.type === "while"
+                    ? "Te polecenia będą powtarzane, dopóki warunek jest prawdziwy."
+                    : b.type === "ifelse"
+                      ? which === "children"
+                        ? "Ta gałąź działa, gdy odpowiedź brzmi TAK."
+                        : "Ta gałąź działa, gdy odpowiedź brzmi NIE."
+                      : "Wybierz polecenie z kolorowych klocków."}
+              </small>
+            )}
+          </div>
+        );
+      }
       return (
         <div
           key={b.id}
-          className={`program-item ${m.color} ${container ? "container-block" : ""} ${activeId === b.id ? "executing" : ""} ${target === b.id ? "target" : ""}`}
+          className={`program-item ${m.color} ${container ? "container-block" : ""} ${activeId === b.id ? "executing" : ""} ${target === b.id ? "target" : ""} ${b.type === "define" ? "function-definition" : ""}`}
         >
           <div className="block-line">
             <Icon size={19} />
@@ -965,50 +1191,91 @@ export default function Home() {
               </button>
             </div>
           </div>
-          {container && (
-            <div className="nested">
-              {renderBlocks(b.children ?? [], depth + 1)}
-              {depth < 3 && (
-                <button
-                  className="insert"
-                  disabled={running}
-                  onClick={() => setTarget(target === b.id ? null : b.id)}
-                >
-                  {target === b.id ? (
-                    <>
-                      <Check size={14} />
-                      Gotowe
-                    </>
-                  ) : (
-                    <>
-                      <Plus size={14} />
-                      Dodaj do środka
-                    </>
-                  )}
-                </button>
-              )}
-              {!b.children?.length && (
-                <small>
-                  Klocki w środku{" "}
-                  {b.type === "repeat"
-                    ? "powtórzą się"
-                    : b.type === "flower"
-                      ? "zadziałają na kwiatku"
-                      : "zadziałają, gdy droga jest wolna"}
-                  .
-                </small>
-              )}
-            </div>
+          {(b.type === "while" || b.type === "ifelse") && (
+            <label className="block-setting">
+              <span>Warunek:</span>
+              <select
+                aria-label={
+                  b.type === "while" ? "Warunek pętli while" : "Warunek if/else"
+                }
+                value={b.condition ?? (b.type === "while" ? "clear" : "flower")}
+                disabled={running}
+                onChange={(e) =>
+                  edited(
+                    updateTree(blocks, b.id, (p) => ({
+                      ...p,
+                      condition: e.target.value as Condition,
+                    })),
+                  )
+                }
+              >
+                {Object.entries(CONDITIONS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
+          {b.type === "define" && (
+            <label className="block-setting">
+              <span>Nazwa:</span>
+              <input
+                aria-label="Nazwa funkcji"
+                value={nameDrafts[b.id] ?? b.name ?? ""}
+                placeholder="moj_przepis"
+                maxLength={24}
+                disabled={running}
+                onChange={(e) =>
+                  setNameDrafts((d) => ({ ...d, [b.id]: e.target.value }))
+                }
+                onBlur={(e) => renameFunction(b.id, e.target.value.trim())}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.currentTarget.blur();
+                }}
+              />
+            </label>
+          )}
+          {b.type === "call" && (
+            <label className="block-setting">
+              <span>Wywołaj:</span>
+              <select
+                aria-label="Wywoływana funkcja"
+                value={b.name}
+                disabled={running}
+                onChange={(e) =>
+                  edited(
+                    updateTree(blocks, b.id, (p) => ({
+                      ...p,
+                      name: e.target.value,
+                    })),
+                  )
+                }
+              >
+                {!blocks.some(
+                  (p) => p.type === "define" && p.name === b.name,
+                ) && <option value={b.name}>{b.name} (brak definicji)</option>}
+                {blocks
+                  .filter((p) => p.type === "define")
+                  .map((p) => (
+                    <option key={p.id} value={p.name}>
+                      {p.name}()
+                    </option>
+                  ))}
+              </select>
+            </label>
+          )}
+          {container && branch("children")}
+          {b.type === "ifelse" && branch("otherwise")}
         </div>
       );
     });
   }
   const code = (() => {
     try {
-      return pythonProgram(blocks);
-    } catch {
-      return "# Warunki gry działają tylko w symulatorze.\n# Robot nie zna kwiatków ani przeszkód z planszy.\n# Usuń warunki, aby wygenerować program robota.";
+      return learningCode(blocks);
+    } catch (e) {
+      return "# " + (e as Error).message;
     }
   })();
   return (
@@ -1152,10 +1419,26 @@ export default function Home() {
             <div className="new-adventures">
               <Sparkles size={20} />
               <span>
-                <strong>12 nowych przygód już czeka!</strong> Wasze 8 gwiazdek
-                zostaje z Wami.
+                <strong>{LESSONS.length - 8} nowych przygód już czeka!</strong>{" "}
+                Wasze 8 gwiazdek zostaje z Wami.
               </span>
               <button onClick={() => selectLesson(LESSONS[8])}>
+                Ruszamy dalej <ArrowRight size={16} />
+              </button>
+            </div>
+          )}
+        {lesson.id >= 9 &&
+          lesson.id <= 20 &&
+          Array.from({ length: 20 }, (_, i) => i + 1).every((id) =>
+            completed.includes(id),
+          ) && (
+            <div className="new-adventures">
+              <Sparkles size={20} />
+              <span>
+                <strong>Nowe: while, if/else i własne funkcje!</strong> Wasze 20
+                gwiazdek zostaje z Wami.
+              </span>
+              <button onClick={() => selectLesson(LESSONS[20])}>
                 Ruszamy dalej <ArrowRight size={16} />
               </button>
             </div>
@@ -1274,6 +1557,18 @@ export default function Home() {
                 Klocki {countBlocks(blocks)}/{lesson.maxBlocks}
               </span>
             )}
+            {lesson.functionRequired && (
+              <span>
+                <Code2 size={15} />
+                Wywołania: {world.functionCalls}/{lesson.minCalls ?? 1}
+              </span>
+            )}
+            {lesson.ifElseRequired && (
+              <span>
+                <Settings2 size={15} />
+                TAK: {world.thenCount} · NIE: {world.elseCount}
+              </span>
+            )}
             {lesson.quacks !== undefined && (
               <span>
                 <Volume2 size={15} />
@@ -1304,6 +1599,29 @@ export default function Home() {
             )}
           </div>
         )}
+        {lesson.id >= 21 && (
+          <details
+            className="concept-card"
+            key={`tip-${lesson.id}`}
+            open={[21, 25, 28].includes(lesson.id)}
+          >
+            <summary>
+              <BookOpen size={17} />
+              {lesson.id <= 24
+                ? "Nowy pomysł: while, czyli „dopóki”"
+                : lesson.id <= 27
+                  ? "Nowy pomysł: if/else, czyli „jeśli / inaczej”"
+                  : "Nowy pomysł: funkcja, czyli Twój własny przepis"}
+            </summary>
+            <p>
+              {lesson.id <= 24
+                ? "„Powtórz” z góry zna liczbę powtórzeń. „Dopóki” pyta przed każdym powtórzeniem: czy warunek nadal jest prawdziwy? Jeżeli NIE — kończy pętlę."
+                : lesson.id <= 27
+                  ? "Kaczka sprawdza warunek i wybiera jedną drogę. TAK: wykonuje klocki pod „jeśli”. NIE: wykonuje klocki pod „inaczej”. Nigdy obu naraz."
+                  : "Definicja mówi, JAK coś zrobić. Wywołanie mówi: ZRÓB TO TERAZ. Nadaj przepisowi nazwę i używaj go wielokrotnie. Zmiana jednej definicji poprawia każde wywołanie."}
+            </p>
+          </details>
+        )}
         <div className="workbench">
           <section className="palette">
             <div className="section-heading">
@@ -1312,38 +1630,35 @@ export default function Home() {
             </div>
             <p className="section-description">Kliknij, żeby dodać.</p>
             <div className="palette-list">
-              {(Object.keys(META) as Block["type"][])
-                .filter(
-                  (type) =>
-                    type !== "clear" || lesson.id === 0 || lesson.id >= 15,
-                )
-                .map((type, i) => {
-                  const m = META[type],
-                    Icon = m.icon;
-                  return (
-                    <div key={type}>
-                      {i === 5 && (
-                        <div className="palette-divider">
-                          ODROBINA MAGII <Sparkles size={12} />
-                        </div>
-                      )}
-                      <button
-                        className={`palette-block ${m.color}`}
-                        disabled={running}
-                        onClick={() => add(type)}
-                      >
-                        <span className="command-icon">
-                          <Icon size={22} />
-                        </span>
-                        <span>
-                          {m.label}
-                          <small>{m.sub}</small>
-                        </span>
-                        <Plus size={15} className="add-icon" />
-                      </button>
-                    </div>
-                  );
-                })}
+              {paletteTypes(lesson).map((type, i) => {
+                const m = META[type],
+                  Icon = m.icon;
+                return (
+                  <div key={type}>
+                    {((lesson.id < 21 && i === 5) ||
+                      (lesson.id >= 21 && i === 0)) && (
+                      <div className="palette-divider">
+                        {lesson.id >= 21 ? "NOWY POMYSŁ" : "ODROBINA MAGII"}{" "}
+                        <Sparkles size={12} />
+                      </div>
+                    )}
+                    <button
+                      className={`palette-block ${m.color}`}
+                      disabled={running}
+                      onClick={() => add(type)}
+                    >
+                      <span className="command-icon">
+                        <Icon size={22} />
+                      </span>
+                      <span>
+                        {m.label}
+                        <small>{m.sub}</small>
+                      </span>
+                      <Plus size={15} className="add-icon" />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
             <div className="mini-tip">
               <span>✦</span>
@@ -1412,7 +1727,11 @@ export default function Home() {
                 )}
                 {target && (
                   <div className="target-note">
-                    Dodajesz do wybranego klocka.
+                    Dodajesz do{" "}
+                    {targetBranch === "otherwise"
+                      ? "gałęzi „inaczej”"
+                      : "wybranego klocka"}
+                    .
                     <button onClick={() => setTarget(null)}>
                       Wróć na koniec programu <ArrowDown size={12} />
                     </button>
@@ -1422,11 +1741,13 @@ export default function Home() {
               </div>
             ) : (
               <div className="code-preview">
-                <span>Tak klocki zamieniają się w Python.</span>
+                <span>Python do nauki · polecenia dotyczą planszy gry.</span>
                 <pre>{code}</pre>
-                <button onClick={exportPython}>
+                <button
+                  onClick={() => download(code, "moj-program-python.txt")}
+                >
                   <Download size={15} />
-                  Pobierz .py
+                  Zapisz podgląd
                 </button>
               </div>
             )}
@@ -1498,6 +1819,10 @@ export default function Home() {
                 success={won}
               />
               <div className="stage-legend">
+                <span className="heading-readout">
+                  Przód: {["↑", "→", "↓", "←"][world.dir]} ·{" "}
+                  {["góra", "prawo", "dół", "lewo"][world.dir]}
+                </span>
                 <span>
                   <Star size={13} fill="#e8ba50" />
                   Twój cel
@@ -1680,10 +2005,11 @@ export default function Home() {
                 </ol>
                 <p className="modal-small">
                   Krok to ok. 8 cm, a skręt ok. 90° — wartości zależą od podłoża
-                  i chodu robota. Warunki „Jeśli kwiatek” i „Jeśli wolna droga”
-                  działają tylko w grze. Ctrl+C zatrzymuje program i wysyła
-                  robot.stop; silniki pozostają włączone. Sprawdź dostępność
-                  Pythona i SSH w dostarczonym oprogramowaniu.
+                  i chodu robota. Warunki planszy, while i if/else działają
+                  tylko w grze. Funkcje bez warunków można eksportować. Ctrl+C
+                  zatrzymuje program i wysyła robot.stop; silniki pozostają
+                  włączone. Sprawdź dostępność Pythona i SSH w dostarczonym
+                  oprogramowaniu.
                 </p>
                 <button className="modal-primary" onClick={exportPython}>
                   <Download size={18} />
@@ -1761,7 +2087,8 @@ export default function Home() {
                   </li>
                 </ol>
                 <div className="notice">
-                  Kaczka idzie tam, gdzie pokazuje mała zielona strzałka. Skręt
+                  Pomarańczowy dziób pokazuje przód Kaczki. Cały robot obraca
+                  się przy skręcie. Lewo i prawo liczymy od strony Kaczki. Skręt
                   obraca ją w miejscu. Przeszkoda zatrzymuje program — popraw go
                   i spróbuj jeszcze raz.
                 </div>

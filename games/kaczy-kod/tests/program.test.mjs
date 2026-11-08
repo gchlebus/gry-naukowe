@@ -14,6 +14,9 @@ import {
   initialWorld,
   advance,
   compile,
+  createExecution,
+  stepExecution,
+  learningCode,
   resultFor,
   validateProgram,
   pythonProgram,
@@ -27,19 +30,23 @@ const b = (type, children, count) => ({
 });
 const seq = (...types) => types.map((type) => b(type));
 function execute(blocks, l) {
-  const instructions = compile(blocks);
+  const ex = createExecution(blocks);
   let w = initialWorld(l);
-  for (let i = 0; i < instructions.length; i++) {
-    const a = instructions[i];
-    if (a.type === "check") {
-      if (!conditionHolds(w, l, a.condition)) i += a.skip;
-    } else {
-      w = advance(w, a.type, l);
-      if (w.bump) break;
-    }
+  while (ex.pc < ex.code.length) {
+    const step = stepExecution(ex, w, l);
+    w = step.world;
+    if (step.done) break;
   }
   return { world: w, ...resultFor(w, l, blocks) };
 }
+const loop = (condition, children) => ({ ...b("while", children), condition });
+const decide = (condition, children, otherwise) => ({
+  ...b("ifelse", children),
+  condition,
+  otherwise,
+});
+const define = (name, children) => ({ ...b("define", children), name });
+const call = (name) => ({ ...b("call"), name });
 const solutions = [
   seq("forward", "forward", "forward"),
   seq("forward", "forward", "left", "forward", "forward"),
@@ -151,6 +158,43 @@ solutions.push(
     b("quack"),
   ],
 );
+solutions.push(
+  [loop("clear", seq("forward"))],
+  [loop("notGoal", seq("forward"))],
+  [loop("clear", seq("forward", "quack"))],
+  [loop("clear", seq("forward"))],
+  [b("repeat", [b("forward"), decide("flower", seq("quack"), seq("wait"))], 4)],
+  [b("repeat", [decide("clear", seq("forward"), seq("left"))], 6)],
+  [loop("notGoal", [decide("clear", seq("forward"), seq("left"))])],
+  [
+    define("powitanie", seq("quack", "quack")),
+    call("powitanie"),
+    call("powitanie"),
+  ],
+  [
+    define("schodek", seq("forward", "left", "forward", "right")),
+    call("schodek"),
+    call("schodek"),
+    call("schodek"),
+  ],
+  [
+    define("schodek", seq("forward", "left", "forward", "right")),
+    call("schodek"),
+    call("schodek"),
+  ],
+  [
+    define("spacer", [loop("clear", seq("forward"))]),
+    call("spacer"),
+    b("left"),
+    call("spacer"),
+  ],
+  [
+    define("decyzja", [
+      decide("clear", [b("forward"), b("flower", seq("quack"))], seq("left")),
+    ]),
+    loop("notGoal", [call("decyzja")]),
+  ],
+);
 for (const l of LESSONS)
   test(`Mission ${l.id} is solvable and checks learning goal`, () => {
     const r = execute(solutions[l.id - 1], l);
@@ -239,11 +283,11 @@ test("generated Python speaks documented JSON-RPC and always ends with stop", ()
     rmSync(dir, { recursive: true, force: true });
   }
 });
-test("chapter ranges cover all twenty stable lesson IDs once", () => {
-  assert.equal(LESSONS.length, 20);
+test("chapter ranges cover all thirty-two stable lesson IDs once", () => {
+  assert.equal(LESSONS.length, 32);
   assert.deepEqual(
     LESSONS.map((l) => l.id),
-    Array.from({ length: 20 }, (_, i) => i + 1),
+    Array.from({ length: 32 }, (_, i) => i + 1),
   );
   assert.deepEqual(
     CHAPTERS.flatMap((c) =>
@@ -258,7 +302,7 @@ test("progress migration preserves all old stars and accepts new ones without du
     [1, 2, 3, 4, 5, 6, 7, 8],
   );
   assert.deepEqual(
-    validCompleted([1, 8, 9, 20, 20, 0, 21, "9", null]),
+    validCompleted([1, 8, 9, 20, 20, 0, 33, "9", null]),
     [1, 8, 9, 20],
   );
 });
@@ -349,4 +393,177 @@ test("new simulated condition cannot be exported as a real robot sensor", () => 
   ]);
   assert.equal(compile(bs)[0].condition, "clear");
   assert.throws(() => pythonProgram(bs), /planszę/);
+});
+test("while checks its condition before the first body and after every repetition", () => {
+  const l = LESSONS[21],
+    atGoal = { ...initialWorld(l), x: l.goal[0], y: l.goal[1] };
+  const ex = createExecution([loop("notGoal", seq("quack"))]);
+  const step = stepExecution(ex, atGoal, l);
+  assert.equal(step.done, true);
+  assert.equal(step.world.quacks, 0);
+  const r = execute([loop("notGoal", seq("forward"))], l);
+  assert.equal(r.world.moves, 3);
+  assert.equal(r.world.y, 1);
+});
+test("while detects empty, stationary and rotating infinite loops with a helpful error", () => {
+  const l = LESSONS[20];
+  for (const body of [[], seq("quack")])
+    assert.throws(
+      () => execute([loop("clear", body)], l),
+      /Pętla while kręci się w kółko/,
+    );
+  assert.throws(
+    () => execute([loop("notGoal", seq("left"))], l),
+    /Pętla while kręci się w kółko/,
+  );
+});
+
+test("if else chooses exactly one branch and can choose differently on the next call", () => {
+  const branch = () => decide("flower", seq("quack"), seq("forward"));
+  const r = execute([branch(), branch()], LESSONS[24]);
+  assert.equal(r.world.moves, 1);
+  assert.equal(r.world.quacks, 1);
+  assert.equal(r.world.thenCount, 1);
+  assert.equal(r.world.elseCount, 1);
+});
+test("function definitions do nothing until called and forward references are resolved", () => {
+  const l = LESSONS[27];
+  let r = execute([define("powitanie", seq("quack", "quack"))], l);
+  assert.equal(r.world.quacks, 0);
+  assert.equal(r.world.functionCalls, 0);
+  r = execute(
+    [
+      call("powitanie"),
+      define("powitanie", seq("quack", "quack")),
+      call("powitanie"),
+    ],
+    l,
+  );
+  assert.equal(r.world.quacks, 4);
+  assert.equal(r.world.functionCalls, 2);
+  assert.equal(r.success, true);
+});
+test("one changed definition changes all its call sites", () => {
+  const l = LESSONS[27],
+    program = [define("echo", seq("quack")), call("echo"), call("echo")];
+  assert.equal(execute(program, l).world.quacks, 2);
+  const updated = [define("echo", seq("quack", "quack")), ...program.slice(1)];
+  assert.equal(execute(updated, l).world.quacks, 4);
+});
+test("functions may call other functions and safely reuse while in another direction", () => {
+  const bs = [
+    define("maly", seq("quack")),
+    define("duzy", [call("maly"), call("maly")]),
+    call("duzy"),
+  ];
+  const r = execute(bs, LESSONS[27]);
+  assert.equal(r.world.quacks, 2);
+  assert.equal(r.world.functionCalls, 3);
+  const walk = execute(solutions[30], LESSONS[30]);
+  assert.equal(walk.success, true);
+  assert.equal(walk.world.moves, 10);
+  assert.equal(walk.world.functionCalls, 2);
+});
+test("missing, duplicate and recursive function definitions are rejected, even if unused", () => {
+  assert.throws(() => compile([call("brak")]), /Najpierw stwórz funkcję/);
+  assert.throws(
+    () => compile([define("a", []), define("a", [])]),
+    /Dwie funkcje/,
+  );
+  assert.throws(() => compile([define("a", [call("a")])]), /samą siebie/);
+  assert.throws(
+    () => compile([define("a", [call("b")]), define("b", [call("a")])]),
+    /samą siebie/,
+  );
+  assert.throws(() => compile([define("a", [call("brak")])]), /Najpierw/);
+});
+test("expanded function graphs are bounded before running", () => {
+  const defs = Array.from({ length: 12 }, (_, i) =>
+    define(
+      `f${i}`,
+      i === 11 ? seq("quack") : [call(`f${i + 1}`), call(`f${i + 1}`)],
+    ),
+  );
+  assert.throws(() => compile([...defs, call("f0")]), /256/);
+});
+test("imports validate both if else branches, function names and conditions", () => {
+  assert.throws(
+    () => validateProgram([decide("flower", [], [{ type: "exec" }])]),
+    /Nie rozpoznaję/,
+  );
+  assert.throws(
+    () => validateProgram([loop("anything", [])]),
+    /Wybierz warunek/,
+  );
+  assert.throws(() => validateProgram([define("while", [])]), /Nazwij funkcję/);
+  assert.throws(
+    () => validateProgram([define("zla nazwa", [])]),
+    /Nazwij funkcję/,
+  );
+  assert.throws(
+    () => validateProgram([b("repeat", [define("ukryta", [])], 2)]),
+    /głównym poziomie/,
+  );
+  assert.equal(
+    countBlocks([decide("clear", seq("forward"), seq("left", "quack"))]),
+    4,
+  );
+});
+test("old twenty stars and new lesson programs survive the same storage format", () => {
+  const stars = Array.from({ length: 20 }, (_, i) => i + 1);
+  assert.deepEqual(validCompleted([...stars, 21, 28, 32, 32]), [
+    ...stars,
+    21,
+    28,
+    32,
+  ]);
+  for (const index of [20, 24, 27, 31]) {
+    const restored = validateProgram(
+      JSON.parse(JSON.stringify(solutions[index])),
+    );
+    assert.equal(execute(restored, LESSONS[index]).success, true);
+  }
+});
+test("all educational Python previews parse as Python, with while, if else and def visible", () => {
+  for (const bs of solutions) {
+    const code = learningCode(bs);
+    execFileSync(
+      "python3",
+      ["-c", "import ast,sys; ast.parse(sys.stdin.read())"],
+      { input: code },
+    );
+  }
+  assert.match(learningCode(solutions[20]), /while wolna_droga\(\):/);
+  assert.match(learningCode(solutions[24]), /if na_kwiatku\(\):[\s\S]*else:/);
+  assert.match(
+    learningCode(solutions[27]),
+    /def powitanie\(\):[\s\S]*powitanie\(\)/,
+  );
+});
+test("hardware export flattens finite function calls and refuses board-dependent constructs", () => {
+  const dir = mkdtempSync(join(tmpdir(), "kaczy-functions-"));
+  try {
+    const file = join(dir, "program.py");
+    writeFileSync(file, pythonProgram(solutions[27]));
+    const out = execFileSync("python3", [file], { encoding: "utf8" });
+    assert.match(out, /quack, quack, quack, quack/);
+    assert.match(out, /Nie wyslano polecen/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+  assert.throws(() => pythonProgram(solutions[20]), /planszy gry/);
+  assert.throws(() => pythonProgram(solutions[24]), /planszy gry/);
+});
+test("continuous heading rotates the whole sprite by one quarter turn without wraparound", () => {
+  const l = LESSONS[0];
+  let w = initialWorld(l);
+  assert.equal(w.angle, 90);
+  for (let i = 0; i < 4; i++) w = advance(w, "right", l);
+  assert.equal(w.dir, 1);
+  assert.equal(w.angle, 450);
+  w = advance(w, "left", l);
+  assert.equal(w.dir, 0);
+  assert.equal(w.angle, 360);
+  w = advance(w, "forward", l);
+  assert.deepEqual([w.x, w.y], [1, 3]);
 });

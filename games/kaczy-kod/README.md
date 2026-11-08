@@ -1,6 +1,6 @@
 # Kaczy Kod
 
-Polska aplikacja do wspólnej nauki programowania z dzieckiem od 7 lat. Dwadzieścia przygód, edytor klocków z pętlami i warunkami, animowana plansza, odtwarzanie krok po kroku, polski lektor przeglądarkowy, lokalny zapis i pliki do przenoszenia programów. Lektor zależy od głosów dostępnych w systemie.
+Polska aplikacja do wspólnej nauki programowania z dzieckiem od 7 lat. Trzydzieści dwie przygody, edytor klocków z pętlami i warunkami, animowana plansza, odtwarzanie krok po kroku, polski lektor przeglądarkowy, lokalny zapis i pliki do przenoszenia programów. Lektor zależy od głosów dostępnych w systemie.
 
 ## Uruchomienie lokalne (macOS i Linux)
 
@@ -33,7 +33,7 @@ npm test
 npx tsc --noEmit
 ```
 
-Testy obejmują rozwiązania wszystkich 20 poziomów, logikę planszy, zachowanie postępów i eksport Pythona. Test komunikacji korzysta z lokalnej atrapy robota przez gniazdo Unix i jest przeznaczony dla macOS/Linux; nie wymaga fizycznego sprzętu.
+Testy obejmują rozwiązania wszystkich 32 poziomów, logikę planszy, zachowanie postępów i eksport Pythona. Test komunikacji korzysta z lokalnej atrapy robota przez gniazdo Unix i jest przeznaczony dla macOS/Linux; nie wymaga fizycznego sprzętu.
 
 ### Zbudowana wersja lokalna
 
@@ -62,9 +62,25 @@ Technologia: React 19, TypeScript, Vinext/Vite, SVG. Bez kont dziecka, reklam, b
 - **9–14 — Owocowe wyprawy:** zbieranie wisienek, ponumerowane przystanki, naprawianie gotowego programu, końcowy kierunek, limit klocków i zagnieżdżone pętle.
 - **15–20 — Kacze wyzwania:** klucz otwierający furtkę, warunek „Jeśli wolna droga”, nocna trasa, naprawianie pętli, limit kroków i finał łączący różne cele.
 
+- **21–27 — Pętle i decyzje:** prawdziwa pętla `while` z warunkiem sprawdzanym przy każdym powtórzeniu, dwie gałęzie `if/else`, naprawianie zapętlonego programu i łączenie decyzji z pętlami.
+- **28–32 — Moje funkcje:** nazwane definicje i wywołania, wielokrotne używanie jednego przepisu, poprawianie definicji w jednym miejscu oraz funkcje z `while` i `if/else`.
+
+### Nowe klocki
+
+- **Dopóki (while):** wybierz warunek „wolna droga”, „stoję na kwiatku” lub „nie ma mnie na gwiazdce”, następnie dodaj polecenia do środka. Pętla ponownie sprawdza aktualny stan planszy przed każdą iteracją. Powtarzający się stan pętli kończy się komunikatem do poprawienia programu; całe wykonanie ma limit 512 instrukcji.
+- **Jeśli / inaczej (if/else):** wybierz warunek i osobno wypełnij gałąź „jeśli” oraz „inaczej”. Wykonuje się dokładnie jedna z nich.
+- **Stwórz funkcję:** wpisz nazwę, np. `schodek`, zatwierdź Enterem lub kliknięciem poza polem i dodaj jej polecenia. Definicje są na głównym poziomie i same nie uruchamiają robota.
+- **Użyj funkcji:** wybierz wcześniej zdefiniowaną funkcję. Wywołanie można umieścić w kilku miejscach, wewnątrz pętli lub innej funkcji. Zmiana nazwy aktualizuje wywołania; brakujące, powielone i rekurencyjne definicje są zgłaszane jako błąd.
+
+Karta **Python** pokazuje czytelny kod do nauki z `while`, `if/else` i `def`. Polecenia takie jak `krok()` i `wolna_droga()` należą do planszy gry; ten podgląd nie jest samodzielnym skryptem sterującym sprzętem. Można go zapisać jako plik tekstowy. Osobny eksport dla Microducka jest w „Nasz Microduck”. Funkcje z samymi ruchami, dźwiękami i skończonymi powtórzeniami są w nim rozwijane do sekwencji poleceń; warunki planszy, `while` i `if/else` blokują eksport sprzętowy.
+
+### Kierunek Kaczki
+
+Na planszy Kaczka jest pokazana z góry. Pomarańczowy dziób wskazuje przód, a cały sprite obraca się płynnie o 90° przy skręcie w lewo lub w prawo. Wskaźnik „Przód” pod planszą dodatkowo podaje kierunek. Ruch do przodu zawsze jest liczony względem obróconej Kaczki.
+
 Każdy poziom ma podpowiedź i test potwierdzający pełne rozwiązanie. Wisienki i klucz zbierają się po wejściu na kratkę. Przystanki liczą się wyłącznie w kolejności ich numerów. Zamknięta furtka zatrzymuje ruch, a zebrany klucz otwiera wszystkie furtki poziomu. Warunek wolnej drogi sprawdza kratkę bezpośrednio przed Kaczką, uwzględniając granice planszy, kamienie i zamknięte furtki. Budżet kroków liczy tylko przebyte kratki; budżet klocków liczy również klocki wewnątrz pętli.
 
-Poziomy 11 i 18 zaczynają się gotowym, błędnym programem. „Przywróć zagadkę” wczytuje go ponownie. Dotychczasowe gwiazdki i programy zachowują klucz zapisu `kaczy-kod-v1`; aktualizacja rozszerza akceptowane identyfikatory do 20 i nie zeruje postępów.
+Poziomy 11 i 18 zaczynają się gotowym, błędnym programem. „Przywróć zagadkę” wczytuje go ponownie. Dotychczasowe gwiazdki i programy zachowują klucz zapisu `kaczy-kod-v1`; aktualizacja rozszerza akceptowane identyfikatory do 32 i nie zeruje postępów.
 
 ## Prawdziwy Microduck
 

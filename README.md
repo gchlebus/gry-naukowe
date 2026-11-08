@@ -6,9 +6,9 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 
 ## Gry
 
-| Gra | Czego uczy | Technologia | Uruchomienie |
-| --- | --- | --- | --- |
-| [Kaczy Kod](games/kaczy-kod/) | Programowanie z klocków: 20 przygód, pętle, warunki i zagadki; od 7 lat | React, TypeScript, Vinext/Vite; eksport do Pythona dla Microducka | [Instrukcja](games/kaczy-kod/README.md#uruchomienie-lokalne-macos-i-linux) |
+| Gra                           | Czego uczy                                                                               | Technologia                                                       | Uruchomienie                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Kaczy Kod](games/kaczy-kod/) | Programowanie z klocków: 32 przygody, while, if/else, własne funkcje i zagadki; od 7 lat | React, TypeScript, Vinext/Vite; eksport do Pythona dla Microducka | [Instrukcja](games/kaczy-kod/README.md#uruchomienie-lokalne-macos-i-linux) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 

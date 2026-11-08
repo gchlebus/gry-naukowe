@@ -2293,3 +2293,235 @@ h1 {
     align-items: flex-start;
   }
 }
+.teal {
+  background: #dbeee8;
+  color: #4d8575;
+}
+.indigo {
+  background: #e1e7f5;
+  color: #667aa6;
+}
+.block-setting {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 7px 9px;
+  font-size: 10px;
+  min-width: 0;
+}
+.block-setting > span {
+  white-space: nowrap;
+  opacity: 0.75;
+}
+.block-setting select,
+.block-setting input {
+  font: inherit;
+  color: inherit;
+  background: #fff9;
+  border: 1px solid #00000012;
+  border-radius: 6px;
+  padding: 6px;
+  min-width: 0;
+  flex: 1;
+  width: 100%;
+}
+.block-setting input {
+  font-family: ui-monospace, monospace;
+}
+.branch-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  padding: 6px 2px;
+  color: #8b73a3;
+}
+.else-branch {
+  border-left-color: #9a85ac50;
+  border-top: 1px dashed #b19dbb80;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+.insertion-selected {
+  background: #fff5;
+  border-radius: 5px;
+}
+.function-definition > .block-line {
+  border-bottom: 1px dashed #7d91b442;
+  margin-bottom: 9px;
+}
+.function-definition .nested {
+  border-left-color: #8396ba55;
+}
+.concept-card {
+  border: 1px solid #d7e1d2;
+  background: #edf2e8;
+  border-radius: 12px;
+  margin: 0 0 22px;
+  padding: 14px 17px;
+  color: #657d5c;
+}
+.concept-card summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+  list-style: none;
+}
+.concept-card summary::after {
+  content: "+";
+  margin-left: auto;
+  font-size: 18px;
+  font-weight: 400;
+}
+.concept-card[open] summary::after {
+  content: "−";
+}
+.concept-card p {
+  font-size: 12px;
+  line-height: 1.9;
+  margin-top: 10px;
+  max-width: 900px;
+}
+.palette-list {
+  max-height: 720px;
+  overflow-y: auto;
+  padding: 4px 3px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #c5d2ba transparent;
+}
+.palette-list .palette-divider {
+  margin-top: 6px;
+}
+.heading-readout {
+  font-weight: 650;
+  color: #53714f;
+}
+.stage-legend {
+  flex-wrap: wrap;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.code-preview pre {
+  font-size: 12px;
+  line-height: 1.9;
+  white-space: pre;
+  min-height: 240px;
+}
+.code-preview > span {
+  font-size: 10px;
+}
+.robot-heading {
+  transform-origin: 0 0;
+  transform-box: view-box;
+}
+.sidebar {
+  min-height: 1200px;
+}
+.program-item {
+  scroll-margin: 30px;
+}
+.nested .block-setting {
+  font-size: 9px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.nested .nested .block-setting {
+  font-size: 8px;
+}
+.insert {
+  min-height: 31px;
+}
+@media (max-width: 1240px) {
+  .block-setting {
+    font-size: 9px;
+  }
+  .concept-card p {
+    font-size: 11px;
+  }
+  .code-preview pre {
+    font-size: 11px;
+  }
+}
+@media (max-width: 1080px) {
+  .sidebar {
+    min-height: 1750px;
+  }
+}
+@media (max-width: 700px) {
+  .sidebar {
+    min-height: 0;
+  }
+  .block-setting {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    font-size: 9px;
+  }
+  .block-setting > span {
+    font-size: 8px;
+  }
+  .block-setting select,
+  .block-setting input {
+    min-height: 28px;
+    padding: 5px 3px;
+    font-size: 9px;
+  }
+  .branch-label {
+    font-size: 7px;
+    letter-spacing: 0.3px;
+  }
+  .nested .block-setting {
+    font-size: 8px;
+  }
+  .nested .nested .block-setting select {
+    font-size: 8px;
+  }
+  .concept-card {
+    padding: 12px;
+  }
+  .concept-card summary {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .concept-card p {
+    font-size: 11px;
+  }
+  .code-preview pre {
+    font-size: 10px;
+  }
+  .palette-list {
+    max-height: 740px;
+  }
+  .palette-block small {
+    font-size: 7px;
+  }
+  .palette-block span:not(.command-icon) {
+    font-size: 9px;
+  }
+  .palette-block .command-icon {
+    width: 19px;
+  }
+  .palette-block .command-icon svg {
+    width: 16px;
+  }
+  .heading-readout {
+    font-size: 8px;
+  }
+  .block-tools button {
+    min-width: 12px;
+  }
+  .nested .nested .block-label {
+    font-size: 7px;
+  }
+  .insert {
+    font-size: 8px;
+    gap: 3px;
+    white-space: normal;
+  }
+  .nested {
+    margin-left: 5px;
+    padding-left: 4px;
+  }
+}
