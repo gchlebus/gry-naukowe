@@ -1,0 +1,19 @@
+# System i edytory
+.DS_Store
+.idea/
+.vscode/
+
+# Lokalne konfiguracje i sekrety
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+
+# Środowiska i zależności (dodatkowe reguły w katalogach gier)
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
