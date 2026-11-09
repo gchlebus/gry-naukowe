@@ -11,6 +11,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 | [Kaczy Kod](games/kaczy-kod/) | Programowanie z klocków: 32 przygody, while, if/else, własne funkcje i zagadki; od 7 lat | React, TypeScript, Vinext/Vite; eksport do Pythona dla Microducka | [Instrukcja](games/kaczy-kod/README.md#uruchomienie-lokalne-macos-i-linux) |
 | [Sklepik Kucyków](games/sklepik-kucykow/) | Dodawanie, odejmowanie, mnożenie i dzielenie; 3 poziomy, karty w pary; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/sklepik-kucykow/README.md#uruchomienie-lokalne) |
 | [Kucykowa Poczta](games/kucykowa-poczta/) | Pisanie na klawiaturze: 12 tras, palce, dokładność, czas i własne tempo; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/kucykowa-poczta/README.md#uruchomienie-lokalne) |
+| [Kostka z Zielonego Wzgórza](games/kostka-zielone-wzgorze/) | Układanie własnej kostki 3×3: 8 etapów, animowane obroty, orientacja przestrzenna i cierpliwość; od 7 lat | React, TypeScript, Vinext/Vite, Three.js, cubejs | [Instrukcja](games/kostka-zielone-wzgorze/README.md#uruchomienie-lokalne) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 
@@ -42,6 +43,9 @@ gry-naukowe/
     │   ├── README.md
     │   └── ...
     ├── kucykowa-poczta/
+    │   ├── README.md
+    │   └── ...
+    ├── kostka-zielone-wzgorze/
     │   ├── README.md
     │   └── ...
     └── kolejna-gra/         # własna technologia i własny README
