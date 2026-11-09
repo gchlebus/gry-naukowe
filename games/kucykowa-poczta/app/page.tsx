@@ -126,7 +126,7 @@ function Hands({ finger }: { finger: Finger }) {
       {["l", "r"].map((side) => (
         <svg key={side} viewBox="0 0 230 140" aria-hidden="true">
           <path
-            d="M43 130V87Q33 55 45 56l17 19V48Q62 35 74 35h78q13 0 13 16v41l-8 38"
+            d="M62 70H167V91Q167 112 151 133H78Q62 112 62 91Z"
             fill="#f2e7de"
             stroke="#dfd0c7"
             strokeWidth="1.5"
@@ -163,11 +163,9 @@ function Hands({ finger }: { finger: Finger }) {
             );
           })}
           <path
-            d={
-              side === "l"
-                ? "M63 103 34 80q-10-9-15 1-3 7 6 19l24 28"
-                : "M160 103 188 80q10-9 15 1 3 7-6 19l-24 28"
-            }
+            // Dorsal view, as when typing: both thumbs face the space bar.
+            d="M155 101 183 77q10-9 16 0 4 7-5 18l-23 29-14-5Z"
+            transform={side === "r" ? "translate(229 0) scale(-1 1)" : undefined}
             fill={FINGERS.thumb.color}
             opacity={finger === "thumb" ? 1 : 0.3}
           />
