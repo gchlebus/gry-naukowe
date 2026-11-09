@@ -23,7 +23,9 @@ Polska gra matematyczna do wspólnej zabawy z dzieckiem od około 7 lat. Pomagam
 | 2. Coraz śmielej | Do 50; dodawanie z wynikiem ponad 10 | 2–5 grup po 2–10 rzeczy; do 50 |
 | 3. Mistrzyni sklepiku | Do 100; większe liczby | Tabliczka 2–10 × 2–10 i działania odwrotne do 100 |
 
-Dzielenie zawsze daje wynik całkowity; nie ma dzielenia przez zero. W odejmowaniu pojawia się także wynik zero. Każdy poziom można wybrać od początku. Zacznijcie od 5–10 minut, pytając „Pokaż swój sposób” i pozwalając liczyć na palcach lub obrazkach.
+Dzielenie zawsze daje wynik całkowity; nie ma dzielenia przez zero. W odejmowaniu pojawia się także wynik zero. Domyślnie działa **automatyczny dobór**, osobno dla każdego działania. 5 samodzielnych pierwszych odpowiedzi w oknie 6 zadań podnosi poziom o jeden. Dwie kolejne trudności (błąd przy pierwszej próbie lub użycie obrazków) obniżają poziom o jeden; ten sam identyfikator zadania jest obserwowany tylko raz. Historia zeruje się po zmianie poziomu. Trudność zmienia się od kolejnego zamówienia lub nowego rozdania kart, a ukończone zadanie zostaje na ekranie do sprawdzenia. Starsze karty z rozdania nie zmieniają kalibracji nowego poziomu.
+
+Każdy poziom można też wybrać ręcznie, co wyłącza automat. Przycisk nad poziomami włącza go ponownie i przywraca zapamiętany poziom dla danego działania. Po dwóch błędnych próbach można wybrać prostsze zadanie. Przy pierwszym wczytaniu starszego zapisu gwiazdki i statystyki zostają zachowane, automat startuje od dotychczas wybranego poziomu dla bieżącego działania i od 1 dla pozostałych. Zacznijcie od 5–10 minut, pytając „Pokaż swój sposób” i pozwalając liczyć na palcach lub obrazkach.
 
 ## Wymagania
 

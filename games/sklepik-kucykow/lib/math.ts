@@ -292,7 +292,63 @@ export type Skill = {
   firstTry: number;
   withHelp: number;
 };
+export type Adaptive = {
+  enabled: boolean;
+  levels: Record<Operation, Level>;
+  history: Record<Operation, boolean[]>;
+  seen: string[];
+};
+export function freshAdaptive(): Adaptive {
+  return {
+    enabled: true,
+    levels: { add: 1, subtract: 1, multiply: 1, divide: 1 },
+    history: { add: [], subtract: [], multiply: [], divide: [] },
+    seen: [],
+  };
+}
+export function prepareRound(p: Progress): Progress {
+  return {
+    ...p,
+    level: p.adaptive.enabled ? p.adaptive.levels[p.operation] : p.level,
+  };
+}
+export function adapt(a: Adaptive, t: Task, independent: boolean): Adaptive {
+  if (!a.enabled || a.seen.includes(t.id)) return a;
+  const seen = [...a.seen, t.id].slice(-500);
+  // A matching-card round may still contain tasks from the former level.
+  if (t.level !== a.levels[t.operation]) return { ...a, seen };
+  let history = [...a.history[t.operation], independent].slice(-6),
+    level = a.levels[t.operation];
+  const struggling = history.length >= 2 && history.slice(-2).every((v) => !v);
+  const ready = history.length === 6 && history.filter(Boolean).length >= 5;
+  if (struggling && level > 1) {
+    level = (level - 1) as Level;
+    history = [];
+  } else if (ready && level < 3) {
+    level = (level + 1) as Level;
+    history = [];
+  }
+  return {
+    ...a,
+    seen,
+    levels: { ...a.levels, [t.operation]: level },
+    history: { ...a.history, [t.operation]: history },
+  };
+}
+export function easierRound(p: Progress): Progress {
+  const level = Math.max(1, p.level - 1) as Level;
+  return prepareRound({
+    ...p,
+    level,
+    adaptive: {
+      ...p.adaptive,
+      levels: { ...p.adaptive.levels, [p.operation]: level },
+      history: { ...p.adaptive.history, [p.operation]: [] },
+    },
+  });
+}
 export type Progress = {
+  adaptive: Adaptive;
   version: 1;
   solved: number;
   attempts: number;
@@ -314,6 +370,7 @@ const emptySkill = (): Skill => ({
 });
 export function freshProgress(): Progress {
   return {
+    adaptive: freshAdaptive(),
     version: 1,
     solved: 0,
     attempts: 0,
@@ -392,6 +449,22 @@ export function parseProgress(raw: string): Progress {
   if (Object.hasOwn(OPERATIONS, value.operation)) p.operation = value.operation;
   if ([1, 2, 3].includes(value.level)) p.level = value.level;
   if (Object.hasOwn(PRODUCTS, value.product)) p.product = value.product;
+  if (value.adaptive && typeof value.adaptive === "object") {
+    p.adaptive.enabled = value.adaptive.enabled !== false;
+    for (const op of Object.keys(OPERATIONS) as Operation[]) {
+      const l = value.adaptive.levels?.[op];
+      if ([1, 2, 3].includes(l)) p.adaptive.levels[op] = l;
+      const h = value.adaptive.history?.[op];
+      if (Array.isArray(h))
+        p.adaptive.history[op] = h
+          .filter((x: unknown) => typeof x === "boolean")
+          .slice(-6);
+    }
+    if (Array.isArray(value.adaptive.seen))
+      p.adaptive.seen = value.adaptive.seen
+        .filter((x: unknown) => typeof x === "string" && x.length < 100)
+        .slice(-500);
+  } else p.adaptive.levels[p.operation] = p.level;
   p.music = value.music === true;
   p.volume =
     typeof value.volume === "number" && Number.isFinite(value.volume)
@@ -424,6 +497,7 @@ export function recordAnswer(
   };
   return {
     ...p,
+    adaptive: adapt(p.adaptive, t, correct && priorAttempts === 0 && !usedHelp),
     solved: p.solved + (correct ? 1 : 0),
     attempts: p.attempts + 1,
     skills: { ...p.skills, [key]: skill },

@@ -35,6 +35,8 @@ import {
   BADGES,
   STORAGE_KEY,
   freshProgress,
+  prepareRound,
+  easierRound,
   parseProgress,
   nextTask,
   makePairs,
@@ -373,13 +375,15 @@ export default function Home() {
         "Nie udało się odczytać zapisu. Możesz nadal grać i zapisać nową kopię.",
       );
     }
+    progress = prepareRound(progress);
     setP(progress);
     setQ(quiz(nextTask(progress)));
     setDeck(makePairs(progress.operation, progress.level, progress.product));
     setLoaded(true);
     return () => {
       window.speechSynthesis?.cancel();
-      void context.current?.close();
+      if(context.current && context.current.state!=="closed")void context.current.close().catch(()=>{});
+      context.current=null;
     };
   }, []);
   useEffect(() => {
@@ -437,9 +441,9 @@ export default function Home() {
   function chime() {
     if (!effects) return;
     try {
-      const ac = context.current ?? new AudioContext();
+      const ac = context.current && context.current.state!=="closed" ? context.current : new AudioContext();
       context.current = ac;
-      void ac.resume();
+      void ac.resume().catch(()=>{});
       [523.25, 659.25, 783.99].forEach((frequency, i) => {
         const osc = ac.createOscillator(),
           gain = ac.createGain(),
@@ -490,6 +494,8 @@ export default function Home() {
     window.speechSynthesis.speak(u);
   }
   function resetPairs(progress = p) {
+    progress = prepareRound(progress);
+    setP(progress);
     setDeck(makePairs(progress.operation, progress.level, progress.product));
     setSelected([]);
     setMatched([]);
@@ -497,8 +503,14 @@ export default function Home() {
     setPairMessage("");
     pairAttempts.current = {};
   }
-  function choose(op = p.operation, level = p.level, product = p.product) {
-    const progress = { ...p, operation: op, level, product };
+  function choose(op = p.operation, level?: Level, product = p.product) {
+    const progress = prepareRound({
+      ...p,
+      operation: op,
+      level: level ?? p.level,
+      product,
+      adaptive: level ? { ...p.adaptive, enabled: false } : p.adaptive,
+    });
     setP(progress);
     setQ(quiz(nextTask(progress, q.task)));
     resetPairs(progress);
@@ -532,7 +544,9 @@ export default function Home() {
       }));
   }
   function next() {
-    setQ(quiz(nextTask(p, q.task)));
+    const progress = prepareRound(p);
+    setP(progress);
+    setQ(quiz(nextTask(progress, q.task)));
     answerInput.current?.blur();
   }
   function chooseCard(card: PairCard) {
@@ -577,7 +591,7 @@ export default function Home() {
     if (!file) return;
     try {
       if (file.size > 150000) throw Error("Plik jest za duży.");
-      const progress = parseProgress(await file.text());
+      const progress = prepareRound(parseProgress(await file.text()));
       setP(progress);
       setQ(quiz(nextTask(progress)));
       resetPairs(progress);
@@ -733,6 +747,24 @@ export default function Home() {
         </div>
         <div className="side-divider" />
         <div className="side-label">POZIOM TRUDNOŚCI</div>
+        <button
+          className={`auto-level ${p.adaptive.enabled ? "enabled" : ""}`}
+          aria-pressed={p.adaptive.enabled}
+          onClick={() => {
+            const progress = prepareRound({
+              ...p,
+              adaptive: { ...p.adaptive, enabled: !p.adaptive.enabled },
+            });
+            setP(progress);
+            setQ(quiz(nextTask(progress)));
+            resetPairs(progress);
+          }}
+        >
+          <Sparkles size={15} />
+          {p.adaptive.enabled
+            ? "Dobieramy automatycznie"
+            : "Włącz automatyczny dobór"}
+        </button>
         <div className="levels">
           {LEVELS.map((l) => (
             <button
@@ -755,7 +787,12 @@ export default function Home() {
             </button>
           ))}
         </div>
-        <p className="level-range">{LEVELS[p.level - 1].range}</p>
+        <p className="level-range">
+          {p.adaptive.enabled
+            ? "Zadania dopasowują się do Twoich odpowiedzi. Wybór poziomu ręcznie przełącza na tryb ręczny. "
+            : "Tryb ręczny. "}
+          {LEVELS[p.level - 1].range}
+        </p>
         <div className="daily-card">
           <div>
             <Sun size={19} />
@@ -958,7 +995,10 @@ export default function Home() {
                         <button
                           type="button"
                           className="primary next"
-                          onClick={next}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            next();
+                          }}
                         >
                           Następny klient <ArrowRight size={18} />
                         </button>
@@ -985,6 +1025,29 @@ export default function Home() {
                         "Możesz wybrać kartę lub wpisać swoją odpowiedź."}
                     </span>
                   </div>
+                  {q.status === "asking" &&
+                    q.attempts >= 2 &&
+                    p.adaptive.enabled && (
+                      <button
+                        className="outline-button"
+                        onClick={() => {
+                          const progress = easierRound(p);
+                          setP(progress);
+                          setQ(quiz(nextTask(progress, q.task)));
+                        }}
+                      >
+                        Spróbujmy prostszego zadania <ArrowRight size={15} />
+                      </button>
+                    )}
+                  {q.status === "correct" &&
+                    p.adaptive.enabled &&
+                    p.adaptive.levels[p.operation] !== p.level && (
+                      <p className="adaptive-message">
+                        {p.adaptive.levels[p.operation] > p.level
+                          ? "Świetnie! Kolejne zamówienie będzie małym krokiem dalej."
+                          : "Teraz zrobimy trochę mniejszy krok. Obrazki zawsze mogą pomóc."}
+                      </p>
+                    )}
                   {q.status === "correct" && (
                     <div className="inverse">
                       <span>DZIAŁANIA SĄ PRZYJACIÓŁMI</span>
@@ -1040,7 +1103,7 @@ export default function Home() {
                       key={item}
                       aria-pressed={p.product === item}
                       className={`product ${PRODUCTS[item].color} ${p.product === item ? "chosen-product" : ""}`}
-                      onClick={() => choose(p.operation, p.level, item)}
+                      onClick={() => choose(p.operation, undefined, item)}
                     >
                       <Item type={item} />
                       <span>{PRODUCTS[item].name}</span>
@@ -1244,6 +1307,16 @@ export default function Home() {
                   rozkładanie po równo. Działania odwrotne pokazują, jak
                   sprawdzić wynik. Trudniejsze obliczenia po pomyłce wracają w
                   kolejnych zamówieniach.
+                </div>
+                <div className="parent-callout">
+                  <b>Automatyczny dobór trudności</b>Każde działanie ma własny
+                  poziom. 5 samodzielnych pierwszych odpowiedzi w ostatnich 6
+                  zadaniach podnosi poziom o jeden. Dwie kolejne pomyłki lub
+                  zadania z podpowiedzią obniżają go o jeden. Jedno zadanie
+                  liczy się do doboru tylko raz. Zmiana obowiązuje od kolejnego
+                  zamówienia lub nowego rozdania kart. Wybór poziomu ręcznie
+                  wyłącza automat; można go włączyć przyciskiem nad poziomami.
+                  Po dwóch błędnych próbach dostępne jest też prostsze zadanie.
                 </div>
                 <h3>Postępy według działania i poziomu</h3>
                 <div className="progress-table">
