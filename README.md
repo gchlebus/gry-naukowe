@@ -12,6 +12,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 | [Sklepik Kucyków](games/sklepik-kucykow/) | Dodawanie, odejmowanie, mnożenie i dzielenie; 3 poziomy, karty w pary; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/sklepik-kucykow/README.md#uruchomienie-lokalne) |
 | [Kucykowa Poczta](games/kucykowa-poczta/) | Pisanie na klawiaturze: 12 tras, palce, dokładność, czas i własne tempo; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/kucykowa-poczta/README.md#uruchomienie-lokalne) |
 | [Kostka z Zielonego Wzgórza](games/kostka-zielone-wzgorze/) | Układanie własnej kostki 3×3: 8 etapów, animowane obroty, orientacja przestrzenna i cierpliwość; od 7 lat | React, TypeScript, Vinext/Vite, Three.js, cubejs | [Instrukcja](games/kostka-zielone-wzgorze/README.md#uruchomienie-lokalne) |
+| [Atelier Lalek](games/atelier-lalek/) | Kreatywne stylizacje: fryzury, kolory, makijaż, paznokcie, ubrania, buty i album pomysłów; od 7 lat | React, TypeScript, Vinext/Vite, warstwowe SVG | [Instrukcja](games/atelier-lalek/README.md#uruchomienie-lokalne) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 
@@ -46,6 +47,9 @@ gry-naukowe/
     │   ├── README.md
     │   └── ...
     ├── kostka-zielone-wzgorze/
+    │   ├── README.md
+    │   └── ...
+    ├── atelier-lalek/
     │   ├── README.md
     │   └── ...
     └── kolejna-gra/         # własna technologia i własny README
