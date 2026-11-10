@@ -1,6 +1,6 @@
 # Gry naukowe
 
-Gry edukacyjne do wspólnego odkrywania, eksperymentowania i nauki z dziećmi.
+Gry do wspólnego odkrywania, eksperymentowania i nauki — dla dzieci i dorosłych.
 
 Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolnej technologii i ma własne zależności oraz instrukcję uruchomienia. W głównym katalogu nie ma wspólnego środowiska ani obowiązkowego menedżera pakietów.
 
@@ -13,6 +13,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 | [Kucykowa Poczta](games/kucykowa-poczta/) | Pisanie na klawiaturze: 12 tras, palce, dokładność, czas i własne tempo; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/kucykowa-poczta/README.md#uruchomienie-lokalne) |
 | [Kostka z Zielonego Wzgórza](games/kostka-zielone-wzgorze/) | Układanie własnej kostki 3×3: 8 etapów, animowane obroty, orientacja przestrzenna i cierpliwość; od 7 lat | React, TypeScript, Vinext/Vite, Three.js, cubejs | [Instrukcja](games/kostka-zielone-wzgorze/README.md#uruchomienie-lokalne) |
 | [Atelier Lalek](games/atelier-lalek/) | Kreatywne stylizacje: fryzury, kolory, makijaż, paznokcie, ubrania, buty i album pomysłów; od 7 lat | React, TypeScript, Vinext/Vite, warstwowe SVG | [Instrukcja](games/atelier-lalek/README.md#uruchomienie-lokalne) |
+| [Gabinet Joanny](games/gabinet-joanny/) | 32 autorskie łamigłówki dla dorosłych: dedukcja, matryce, szyfry, nonogramy i geometria; 3 poziomy trudności | HTML, CSS, JavaScript (ES modules), Web Audio; bez zależności | [Instrukcja](games/gabinet-joanny/README.md#uruchomienie-lokalne) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 
@@ -50,6 +51,9 @@ gry-naukowe/
     │   ├── README.md
     │   └── ...
     ├── atelier-lalek/
+    │   ├── README.md
+    │   └── ...
+    ├── gabinet-joanny/
     │   ├── README.md
     │   └── ...
     └── kolejna-gra/         # własna technologia i własny README

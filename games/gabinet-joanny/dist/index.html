@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#21453c" />
+    <meta
+      name="description"
+      content="Gabinet Joanny: 32 autorskie łamigłówki logiczne. Eliksiry Snape’a, Czarodziejka z Księżyca, Super Pig i nadzwyczaj poważna sprawa kartofli."
+    />
+    <title>Gabinet Joanny · Prywatne Archiwum Logiki</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <button
+          class="wordmark"
+          data-action="home"
+          aria-label="Gabinet Joanny — strona główna"
+        >
+          <span class="monogram">J<span>✦</span></span
+          ><span>Gabinet Joanny<small>PRYWATNE ARCHIWUM LOGIKI</small></span>
+        </button>
+        <nav aria-label="Menu gabinetu">
+          <button data-action="home" class="nav-archive">Archiwum</button
+          ><button data-action="journal">
+            Notatnik <span id="note-count"></span></button
+          ><button data-action="about">O grze</button>
+        </nav>
+        <button
+          id="sound-button"
+          class="sound-button"
+          data-action="sound"
+          aria-pressed="false"
+          aria-label="Włącz melodię gabinetu"
+        >
+          <span aria-hidden="true">♫</span
+          ><span class="sound-label">Włącz melodię</span>
+        </button>
+      </header>
+      <div id="storage-alert" class="storage-alert" role="status" hidden></div>
+      <main id="main" tabindex="-1">
+        <div class="initial-loading">Otwieram archiwum…</div>
+      </main>
+      <footer class="site-footer">
+        <div>
+          <span aria-hidden="true">☽</span> Osobista kolekcja Joanny
+          Bukowskiej-Chlebus.
+        </div>
+        <div>
+          <span>Odrobina magii. Solidna porcja logiki.</span
+          ><button data-action="about">Zapis i zasady</button>
+        </div>
+      </footer>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="modal" aria-labelledby="modal-title"></dialog>
+    <noscript
+      ><p class="noscript">
+        Gra potrzebuje włączonego JavaScript do sprawdzania odpowiedzi i
+        zapisywania notatek.
+      </p></noscript
+    >
+    <script type="module" src="./js/app.mjs"></script>
+  </body>
+</html>
