@@ -28,17 +28,18 @@
           <button data-action="home" class="nav-archive">Archiwum</button
           ><button data-action="journal">
             Notatnik <span id="note-count"></span></button
+          ><button data-action="music">Melodie</button
           ><button data-action="about">O grze</button>
         </nav>
         <button
           id="sound-button"
           class="sound-button"
           data-action="sound"
-          aria-pressed="false"
-          aria-label="Włącz melodię gabinetu"
+          aria-haspopup="dialog"
+          aria-label="Muzyka z Suno — wybierz melodię"
         >
           <span aria-hidden="true">♫</span
-          ><span class="sound-label">Włącz melodię</span>
+          ><span class="sound-label">Muzyka z Suno</span>
         </button>
       </header>
       <div id="storage-alert" class="storage-alert" role="status" hidden></div>
@@ -58,6 +59,11 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <dialog id="modal" aria-labelledby="modal-title"></dialog>
+    <dialog
+      id="music-modal"
+      class="music-dialog"
+      aria-labelledby="music-title"
+    ></dialog>
     <noscript
       ><p class="noscript">
         Gra potrzebuje włączonego JavaScript do sprawdzania odpowiedzi i

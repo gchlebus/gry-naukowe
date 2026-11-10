@@ -19,7 +19,7 @@ Ikony interfejsu, favicon, znaki pieczęci i plansze są własnym SVG, HTML lub 
 
 ## Muzyka
 
-Melodia gabinetu i krótki akord sukcesu powstają z oscylatorów Web Audio w `dist/js/app.mjs`. Sekwencje nut i aranżacja są autorskie, przygotowane do tej gry. Nie ma zewnętrznych plików muzycznych, zapożyczonych motywów ani integracji z Suno. Muzyka wymaga świadomego włączenia przez gracza; jest wstrzymywana przy ukryciu karty i może zostać wyciszona.
+Pięć instrumentalnych kompozycji powstało w Suno v6 na koncie użytkownika 10 listopada 2026 r. Gra odtwarza je przez oficjalny odtwarzacz Share → Embed. Dokładne prompty i linki do wszystkich źródeł: [MUSIC.md](MUSIC.md). Nie pobrano gotowych plików audio: eksport w Suno pozostawał na etapie „Preparing…”. Nie użyto oryginalnych tematów z filmów lub seriali. Korzystanie z nagrań podlega warunkom Suno; dokumentacja nie nadaje im osobnej licencji otwartej. Krótki autorski akord sukcesu jest syntezowany przez Web Audio w `dist/js/app.mjs`.
 
 ## Treść i inspiracje
 

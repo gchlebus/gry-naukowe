@@ -1,5 +1,6 @@
 import { PUZZLES, BY_ID, CHAPTERS, TYPES } from "./puzzles.mjs";
 import { cleanDraft, defaultDraft } from "./engine.mjs";
+import { TRACKS } from "./music.mjs";
 export const KEY = "gabinet-joanny-v1";
 export function freshState() {
   return {
@@ -13,6 +14,7 @@ export function freshState() {
     bookmarks: [],
     filters: { chapter: "all", difficulty: "all", type: "all", status: "all" },
     sound: false,
+    musicTrack: TRACKS[0].id,
     volume: 0.18,
   };
 }
@@ -75,6 +77,7 @@ export function parseState(raw) {
       s.filters.status = x.filters.status;
   }
   s.sound = x.sound === true;
+  if (TRACKS.some((t) => t.id === x.musicTrack)) s.musicTrack = x.musicTrack;
   s.volume = Number.isFinite(x.volume)
     ? Math.min(0.4, Math.max(0, x.volume))
     : 0.18;

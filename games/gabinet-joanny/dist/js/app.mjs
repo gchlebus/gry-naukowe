@@ -23,9 +23,11 @@ import {
 } from "./state.mjs";
 import { instruction, hints, answerLabel, explanation } from "./content.mjs";
 import { esc, icon, dots, timeLabel, level, levelDots } from "./ui.mjs";
+import { TRACKS } from "./music.mjs";
 const $ = (s) => document.querySelector(s),
   main = $("#main"),
-  modal = $("#modal");
+  modal = $("#modal"),
+  musicModal = $("#music-modal");
 let state = freshState(),
   storageWarning = "",
   toastTimer,
@@ -33,10 +35,8 @@ let state = freshState(),
   focusMode = false,
   runningSince = null,
   ticks = 0,
-  melody = null,
   audioContext = null,
-  master = null,
-  musicTimer = null;
+  master = null;
 try {
   const raw = localStorage.getItem(KEY);
   if (raw) state = parseState(raw);
@@ -96,14 +96,7 @@ function header() {
   $("#note-count").textContent = s.notes ? String(s.notes) : "";
   document.body.classList.toggle("playing", state.view === "puzzle");
   const b = $("#sound-button");
-  b.setAttribute("aria-pressed", String(!!melody));
-  b.setAttribute(
-    "aria-label",
-    melody ? "Wyłącz melodię gabinetu" : "Włącz melodię gabinetu",
-  );
-  b.querySelector(".sound-label").textContent = melody
-    ? "Melodia gra"
-    : "Włącz melodię";
+  b.title = TRACKS.find((t) => t.id === state.musicTrack).title;
 }
 function filtered() {
   const f = state.filters;
@@ -283,8 +276,13 @@ function renderPuzzle() {
     active = document.activeElement?.dataset.focusKey,
     activeAction = document.activeElement?.dataset.action;
   const sameCase = main.dataset.caseId === p.id;
-  const rulesOpen = sameCase ? (main.querySelector(".instructions")?.open ?? ["code","matrix","nonogram"].includes(p.type)) : ["code","matrix","nonogram"].includes(p.type);
-  const solutionOpen = sameCase ? (main.querySelector(".solution")?.open ?? r.status === "read") : r.status === "read";
+  const rulesOpen = sameCase
+    ? (main.querySelector(".instructions")?.open ??
+      ["code", "matrix", "nonogram"].includes(p.type))
+    : ["code", "matrix", "nonogram"].includes(p.type);
+  const solutionOpen = sameCase
+    ? (main.querySelector(".solution")?.open ?? r.status === "read")
+    : r.status === "read";
   main.dataset.caseId = p.id;
   main.innerHTML = `<div class="case-breadcrumb"><button data-action="home">${icon("back", 15)} Wróć do archiwum</button><span>${esc(c.title)} <i>/</i> Akta ${String(p.number).padStart(2, "0")}</span><button data-action="bookmark" aria-pressed="${state.bookmarks.includes(p.id)}" class="bookmark-button">${icon("bookmark", 16)} ${state.bookmarks.includes(p.id) ? "Z zakładką" : "Odłóż na później"}</button></div><div class="case-heading"><div><span class="eyebrow">${esc(TYPES[p.type]).toUpperCase()} <i>·</i> ${levelDots(p.difficulty)} ${level(p.difficulty).toUpperCase()}</span><h1>${esc(p.title)}</h1></div><button class="focus-button" data-action="focus" aria-pressed="${focusMode}">${icon("focus", 18)} ${focusMode ? "Pełny widok" : "Tryb skupienia"}</button></div><div class="workspace ${focusMode ? "focused" : ""}"><article class="puzzle-paper"><div class="paper-topline"><span>AKTA ${String(p.number).padStart(2, "0")} <i>·</i> ${esc(c.world)}</span><span class="timer">${icon("clock", 13)} <span id="case-time">${timeLabel(r.elapsed)}</span><button data-action="pause" aria-label="${state.paused ? "Wznów czas pracy" : "Wstrzymaj czas pracy"}" ${r.status !== "new" ? "disabled" : ""}>${icon(state.paused ? "play" : "pause", 13)}</button></span></div><p class="case-story">${esc(p.story)}</p><details class="instructions" ${rulesOpen ? "open" : ""}><summary>Zasady tych akt ${icon("hint", 14)}</summary><p>${esc(instruction(p))}</p></details><form id="answer-form"><div class="puzzle-body ${p.type}">${puzzleBody(p, a)}</div><div class="answer-actions"><button type="submit" class="primary">Sprawdź wniosek ${icon("arrow", 17)}</button><button type="button" class="reset-draft" data-action="reset-draft">${icon("reset", 15)} ${["grid", "nonogram", "lights"].includes(p.type) ? "Plansza początkowa" : "Wyczyść odpowiedź"}</button></div></form>${feedback ? `<div class="answer-feedback ${feedback.ok ? "correct" : feedback.incomplete ? "neutral" : "wrong"}" role="status">${icon(feedback.ok ? "check" : "notes", 18)}<p>${esc(feedback.message)}</p></div>` : ""}${r.status === "solved" ? `<div class="solved-panel"><div class="solved-seal">${icon("seal", 42)}</div><div><span class="eyebrow">AKTA ROZWIĄZANE</span><h3>Wniosek zgodny z przesłankami.</h3><p>${r.revealed ? "Rozwiązanie po zapoznaniu się z uzasadnieniem." : r.hints ? `Wykorzystane podpowiedzi: ${r.hints}. Pieczęcie: ${r.seals} / 3.` : "Samodzielne rozwiązanie. Trzy pieczęcie do kolekcji."}</p></div><button data-action="next" class="secondary">Kolejne akta ${icon("arrow", 16)}</button></div>` : ""}${r.status === "solved" || r.revealed ? `<details class="solution" ${solutionOpen ? "open" : ""}><summary>Pokaż uzasadnienie ${icon("eye", 17)}</summary>${solutionMarkup(p)}</details>` : ""}</article><aside class="case-sidebar"><section class="mentor-card"><div class="mentor-image"><img src="./art/gabinet.png" alt="Mistrz eliksirów w nocnym gabinecie"></div><div><span class="eyebrow">Z MARGINESU PROFESORA SNAPE’A</span><p>${esc(PROFESSOR_NOTES[(p.number - 1) % PROFESSOR_NOTES.length])}</p><small>Głos gabinetu · tekst autorski</small></div></section><section class="hint-card"><div class="side-heading"><h2>Mała wskazówka</h2><span>${r.hints} / 2</span></div><p>Odsłaniaj tylko tyle, ile potrzebujesz. Każda podpowiedź zmniejsza liczbę pieczęci za te akta o jedną.</p>${hints(
     p,
@@ -370,7 +368,12 @@ function reveal() {
     r = record(state, p.id);
   if (r.status === "solved" || r.revealed) {
     $(".solution")?.setAttribute("open", "");
-    $(".solution")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    $(".solution")?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
     return;
   }
   flushTime();
@@ -384,7 +387,12 @@ function reveal() {
   feedback = null;
   renderPuzzle();
   markTime();
-  $(".solution")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  $(".solution")?.scrollIntoView({
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth",
+    block: "nearest",
+  });
 }
 function showModal(title, body) {
   modal.innerHTML = `<div class="modal-content"><button class="modal-close" data-action="close-modal" aria-label="Zamknij okno">${icon("close", 20)}</button><span class="eyebrow">GABINET JOANNY</span><h2 id="modal-title">${esc(title)}</h2>${body}</div>`;
@@ -402,7 +410,7 @@ function journal() {
 function about() {
   showModal(
     "Kilka słów przed północą",
-    `<div class="about-copy"><p>Ten gabinet należy do <strong>Joanny Bukowskiej-Chlebus</strong>. Czekają tu 32 autorskie łamigłówki w czterech rozdziałach: Harry Potter i Snape, Czarodziejka z Księżyca, Super Pig oraz prywatny departament kartofli.</p><p>Wybieraj dowolną kolejność. Każde akta zawierają wszystkie potrzebne przesłanki. Są trzy poziomy trudności, dwie podpowiedzi oraz pełne uzasadnienie. Trzy pieczęcie oznaczają rozwiązanie bez podpowiedzi; każda wskazówka odejmuje jedną. Odkrycie rozwiązania przed odpowiedzią daje status „odkryte”. Próby i czas nie odbierają pieczęci.</p><p>Przy planszach działają strzałki na klawiaturze. Enter lub spacja wybiera pole. Notatki i zakładki pomagają wrócić do hipotez. Przycisk pauzy zatrzymuje czas; ukrycie karty również go zatrzymuje. Zegar jest pomocą, nie limitem.</p><p>Postępy i notatki są zapisywane w tej przeglądarce. Inny adres lub urządzenie ma osobny zapis. Przed czyszczeniem danych pobierz kopię. Wczytanie pliku zastąpi obecne postępy.</p><div class="backup-actions"><button class="secondary" data-action="export">${icon("download", 17)} Pobierz zapis JSON</button><label class="secondary file-label">Wczytaj zapis<input type="file" id="import-file" accept=".json,application/json"></label></div><label class="volume-label">Głośność melodii<input type="range" data-input="volume" min="0" max="40" value="${Math.round(state.volume * 100)}" aria-label="Głośność melodii"></label><p class="small">Wszystkie zagadki, notatki profesora i ilustracja powstały do tej gry. Inspiracje: światy Harry’ego Pottera, Czarodziejki z Księżyca oraz Super Pig. Nie korzystamy z filmowych kadrów ani oryginalnych nagrań. Melodia jest własną, delikatną kompozycją syntezowaną w przeglądarce.</p><button class="primary full" data-action="close-modal">Otwórzmy te akta ${icon("arrow", 17)}</button></div>`,
+    `<div class="about-copy"><p>Ten gabinet należy do <strong>Joanny Bukowskiej-Chlebus</strong>. Czekają tu 32 autorskie łamigłówki w czterech rozdziałach: Harry Potter i Snape, Czarodziejka z Księżyca, Super Pig oraz prywatny departament kartofli.</p><p>Wybieraj dowolną kolejność. Każde akta zawierają wszystkie potrzebne przesłanki. Są trzy poziomy trudności, dwie podpowiedzi oraz pełne uzasadnienie. Trzy pieczęcie oznaczają rozwiązanie bez podpowiedzi; każda wskazówka odejmuje jedną. Odkrycie rozwiązania przed odpowiedzią daje status „odkryte”. Próby i czas nie odbierają pieczęci.</p><p>Przy planszach działają strzałki na klawiaturze. Enter lub spacja wybiera pole. Notatki i zakładki pomagają wrócić do hipotez. Przycisk pauzy zatrzymuje czas; ukrycie karty również go zatrzymuje. Zegar jest pomocą, nie limitem.</p><p>Postępy i notatki są zapisywane w tej przeglądarce. Inny adres lub urządzenie ma osobny zapis. Przed czyszczeniem danych pobierz kopię. Wczytanie pliku zastąpi obecne postępy.</p><div class="backup-actions"><button class="secondary" data-action="export">${icon("download", 17)} Pobierz zapis JSON</button><label class="secondary file-label">Wczytaj zapis<input type="file" id="import-file" accept=".json,application/json"></label></div><label class="volume-label">Głośność dźwięku sukcesu<input type="range" data-input="volume" min="0" max="40" value="${Math.round(state.volume * 100)}" aria-label="Głośność dźwięku sukcesu"></label><p class="small">Wszystkie zagadki, notatki profesora i ilustracja powstały do tej gry. Inspiracje: światy Harry’ego Pottera, Czarodziejki z Księżyca oraz Super Pig. Nie korzystamy z filmowych kadrów ani oryginalnych nagrań. Pięć melodii powstało do tej gry w Suno. Menu „Melodie” otwiera wybór nagrania i oficjalny odtwarzacz Suno. Muzyka wymaga internetu; naciśnij ▶ w odtwarzaczu. Po zamknięciu okna może grać w tle. Ukrycie karty zatrzymuje muzykę.</p><button class="primary full" data-action="close-modal">Otwórzmy te akta ${icon("arrow", 17)}</button></div>`,
   );
 }
 function exportSave() {
@@ -441,46 +449,51 @@ function note(freq, t, duration, gain = 0.11) {
   o.start(t);
   o.stop(t + duration + 0.1);
 }
-function loopMusic() {
-  const ctx = getAudio(),
-    base = ctx.currentTime + 0.05;
-  [261.63, 329.63, 392, 293.66, 349.23, 440, 329.63, 246.94].forEach((f, i) => {
-    note(f, base + i * 1.55, 2.8, 0.14);
-    if (i % 2 === 0) note(f / 2, base + i * 1.55, 4, 0.07);
-  });
-}
 function stopMusic() {
-  clearInterval(musicTimer);
-  musicTimer = null;
-  melody = false;
-  for (const voice of voices) { try { voice.stop(); } catch {} }
+  musicModal.querySelector("iframe")?.removeAttribute("src");
+  state.sound = false;
+  for (const voice of voices) {
+    try {
+      voice.stop();
+    } catch {}
+  }
   voices.clear();
   if (audioContext) void audioContext.suspend();
-  header();
+  const status = musicModal.querySelector("#music-status");
+  if (status)
+    status.textContent =
+      "Muzyka zatrzymana. Wybierz nagranie, aby otworzyć odtwarzacz.";
 }
-async function toggleMusic() {
-  if (melody) {
-    stopMusic();
-    state.sound = false;
-  } else {
-    try {
-      const ctx = getAudio();
-      await ctx.resume();
-      master.gain.value = state.volume;
-      melody = true;
-      state.sound = true;
-      loopMusic();
-      musicTimer = setInterval(loopMusic, 13200);
-    } catch {
-      toast("Przeglądarka nie uruchomiła melodii. Spróbuj ponownie.");
-      melody = false;
-    }
-  }
-  save();
+function selectMusic(id) {
+  const t = TRACKS.find((t) => t.id === id);
+  if (!t) return;
+  state.musicTrack = t.id;
+  state.sound = true;
+  const frame = musicModal.querySelector("iframe");
+  const url = `https://suno.com/embed/${t.source}`;
+  if (frame.getAttribute("src") !== url) frame.src = url;
+  frame.title = `Suno: ${t.title}`;
+  musicModal
+    .querySelectorAll('[data-action="track"]')
+    .forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.id === t.id)),
+    );
+  musicModal.querySelector("#music-status").textContent =
+    `Wybrano: ${t.title}. Naciśnij ▶ w odtwarzaczu Suno.`;
+  const link = musicModal.querySelector("#music-source");
+  link.href = `https://suno.com/song/${t.source}`;
   header();
+  save();
+}
+function musicRoom() {
+  if (!musicModal.querySelector("iframe"))
+    musicModal.innerHTML = `<div class="modal-content"><button class="modal-close" data-action="close-music" aria-label="Zamknij melodie">${icon("close", 20)}</button><span class="eyebrow">ŚCIEŻKA DŹWIĘKOWA GABINETU</span><h2 id="music-title">Pięć melodii na dobry wieczór</h2><p class="music-intro">Wybierz nastrój, a potem naciśnij ▶ w odtwarzaczu Suno.</p><div class="music-list" aria-label="Melodie gabinetu">${TRACKS.map((t, i) => `<button class="music-track" data-action="track" data-id="${t.id}" aria-pressed="${t.id === state.musicTrack}"><span class="music-number">${String(i + 1).padStart(2, "0")}</span><span><strong>${esc(t.title)}</strong><small>${esc(t.subtitle)}</small></span></button>`).join("")}</div><iframe class="suno-player" title="Odtwarzacz Suno" width="760" height="200" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><p id="music-status" class="music-status" role="status"></p><div class="music-actions"><button class="secondary" data-action="stop-music">Zatrzymaj muzykę</button><a id="music-source" target="_blank" rel="noopener noreferrer">Otwórz utwór w Suno ↗</a></div><p class="music-footnote">Możesz zamknąć to okno i wrócić do zagadki. Odtwarzanie wymaga internetu. Ukrycie karty zatrzymuje muzykę.</p></div>`;
+  if (!musicModal.open) musicModal.showModal();
+  if (!musicModal.querySelector("iframe").getAttribute("src"))
+    selectMusic(state.musicTrack);
 }
 function chime() {
-  if (!state.sound) return;
+  if (!state.sound || !musicModal.querySelector("iframe[src]")) return;
   try {
     const ctx = getAudio();
     void ctx.resume();
@@ -515,8 +528,21 @@ document.addEventListener("click", (e) => {
     about();
     return;
   }
-  if (action === "sound") {
-    void toggleMusic();
+  if (action === "sound" || action === "music") {
+    musicRoom();
+    return;
+  }
+  if (action === "close-music") {
+    musicModal.close();
+    return;
+  }
+  if (action === "track") {
+    selectMusic(b.dataset.id);
+    return;
+  }
+  if (action === "stop-music") {
+    stopMusic();
+    save();
     return;
   }
   if (action === "export") {
@@ -528,7 +554,12 @@ document.addEventListener("click", (e) => {
       state.filters.chapter === b.dataset.id ? "all" : b.dataset.id;
     save();
     renderHome();
-    $("#archive").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    $("#archive").scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
     return;
   }
   if (action === "reset-filters") {
@@ -686,6 +717,7 @@ document.addEventListener("change", async (e) => {
       if (file.size > 512000) throw Error("Plik jest za duży.");
       const parsed = parseState(await file.text());
       flushTime();
+      stopMusic();
       state = parsed;
       save();
       modal.close();
@@ -736,11 +768,13 @@ document.addEventListener("visibilitychange", () => {
   flushTime();
   if (document.hidden) {
     save();
-    if (melody) stopMusic();
+    stopMusic();
+    save();
   }
   markTime();
 });
 window.addEventListener("pagehide", () => {
+  stopMusic();
   flushTime();
   save();
 });

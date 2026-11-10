@@ -14,7 +14,7 @@ Gra ćwiczy dedukcję, rozpoznawanie reguł, logikę warunkową, wyobraźnię pr
 - Za samodzielne rozwiązanie dostajesz trzy pieczęcie. Każda podpowiedź odejmuje jedną. Odkrycie uzasadnienia przed odpowiedzią pozwala ćwiczyć dalej, z zerem pieczęci za te akta. Próby i czas nie obniżają wyniku.
 - Zegar mierzy czas pracy nad otwartym zadaniem. Można go zatrzymać; ukrycie karty również zatrzymuje naliczanie. Nie ma limitu czasu.
 - Notatki zapisują się automatycznie, a zakładki pozwalają odłożyć akta na później. Przy planszach działają strzałki, Enter i spacja.
-- Przycisk **Włącz melodię** uruchamia spokojną, autorską kompozycję syntezowaną w przeglądarce. Głośność jest w oknie **O grze**. Domyślnie dźwięk jest wyłączony.
+- Menu **Melodie** lub przycisk **Muzyka z Suno** otwiera pięć nowych instrumentalnych utworów. Wybierz nagranie i naciśnij **▶ w odtwarzaczu Suno**. Zamknięcie okna pozwala wrócić do zagadki; muzyka może nadal grać. Przycisk **Zatrzymaj muzykę**, zmiana utworu lub ukrycie karty zatrzymuje poprzednie nagranie. Odtwarzanie wymaga internetu, a powrót po ukryciu karty — ponownego wybrania nagrania i naciśnięcia ▶. Nie ma automatycznego przechodzenia do kolejnego utworu.
 
 ## Wymagania
 
@@ -23,7 +23,7 @@ Gra ćwiczy dedukcję, rozpoznawanie reguł, logikę warunkową, wyobraźnię pr
 - Aktualna przeglądarka obsługująca moduły JavaScript, `dialog`, localStorage i Web Audio, np. Chrome, Safari, Firefox lub Edge.
 - macOS, Linux lub Windows z Node.js. Polecenia poniżej można wykonać w Terminalu lub PowerShellu.
 
-Gra nie ma zależności npm ani backendu. Do samej gry nie są potrzebne konto ChatGPT, Sites, Suno, klucze API ani dodatkowy sprzęt. Opcjonalne kroje pisma pobierają się z Google Fonts; bez sieci przeglądarka użyje fontów systemowych.
+Gra nie ma zależności npm ani backendu. Do rozwiązywania zagadek nie są potrzebne konto ChatGPT, Sites, Suno, klucze API ani dodatkowy sprzęt. Opcjonalna muzyka jest odtwarzana przez Suno i wymaga internetu oraz dostępności tej usługi. Opcjonalne kroje pisma pobierają się z Google Fonts; bez sieci przeglądarka użyje fontów systemowych.
 
 ## Uruchomienie lokalne
 
@@ -73,7 +73,7 @@ Generator jest deterministyczny. Nie edytuj ręcznie wygenerowanego `dist/js/puz
 
 ## Postępy i dane
 
-Zapis jest lokalny dla konkretnego adresu i przeglądarki, pod kluczem **`gabinet-joanny-v1`** w localStorage. Obejmuje odpowiedzi robocze, rozwiązane akta, użyte podpowiedzi, czas pracy, notatki, zakładki i ustawienia. Gra niczego nie wysyła do serwera aplikacji i nie synchronizuje danych między urządzeniami. Inny port, domena lub przeglądarka ma osobny zapis.
+Zapis jest lokalny dla konkretnego adresu i przeglądarki, pod kluczem **`gabinet-joanny-v1`** w localStorage. Obejmuje odpowiedzi robocze, rozwiązane akta, użyte podpowiedzi, czas pracy, notatki, zakładki i ustawienia. Gra niczego nie wysyła do serwera aplikacji i nie synchronizuje danych między urządzeniami. Po otwarciu menu muzyki przeglądarka łączy się osobno z osadzonym odtwarzaczem Suno; nie przekazujemy mu notatek, odpowiedzi ani postępów. Inny port, domena lub przeglądarka ma osobny zapis.
 
 W **O grze → Pobierz zapis JSON** możesz zachować kopię. **Wczytaj zapis** odtwarza dane z pliku i zastępuje aktualne postępy, dlatego wcześniej warto pobrać bieżącą kopię. Nieprawidłowy plik jest odrzucany bez zmiany zapisu. Wyczyszczenie danych strony w przeglądarce usuwa lokalne postępy. Jeśli przeglądarka blokuje zapis, gra pokazuje komunikat i można korzystać z kopii JSON.
 
@@ -81,13 +81,14 @@ Pliki kopii graczy nie należą do repozytorium. `outputs/` jest ignorowane prze
 
 ## Sprawdzona wersja
 
-- 13 testów automatycznych oraz kontrola składni i zasobów.
+- 14 testów automatycznych oraz kontrola składni i zasobów, w tym zgodność zapisu sprzed dodania muzyki.
 - W przeglądarce: poprawne i błędne odpowiedzi, po jednym przykładzie każdej z dziesięciu rodzin, podpowiedzi, uzasadnienie, pieczęcie, notatki, zakładki i powrót po odświeżeniu.
 - Pobranie JSON, odtworzenie pobranej kopii oraz odrzucenie nieprawidłowego pliku.
-- Włączenie i wyłączenie melodii, obsługa klawiatury oraz responsywny układ przy szerokości 390 px. To kontrola emulowanego widoku, nie test na fizycznym telefonie.
+- Obsługa klawiatury oraz responsywny układ przy szerokości 390 px. To kontrola emulowanego widoku, nie test na fizycznym telefonie.
+- Odtwarzanie wszystkich pięciu melodii Suno, zmiana nagrania, zatrzymanie, zachowanie muzyki podczas powrotu do zagadki oraz zapamiętanie wyboru po odświeżeniu. Źródła i dokładne prompty: [MUSIC.md](MUSIC.md).
 
 ## Kod i zasoby
 
-HTML, CSS i JavaScript w modułach ES; oryginalna oprawa SVG/CSS, ilustracja wygenerowana do projektu, muzyka Web Audio. Pochodzenie ilustracji, dokładny prompt i informacje o inspiracjach znajdują się w [ASSETS.md](ASSETS.md).
+HTML, CSS i JavaScript w modułach ES; oryginalna oprawa SVG/CSS, ilustracja wygenerowana do projektu, pięć kompozycji Suno i akord sukcesu Web Audio. Pochodzenie ilustracji, dokładny prompt i informacje o inspiracjach znajdują się w [ASSETS.md](ASSETS.md).
 
 Projekt jest fanowską, osobistą grą; nie jest oficjalną produkcją właścicieli wymienionych światów. Zagadki i wypowiedzi profesora są autorskie. Nie używa filmowych kadrów, nagrań z seriali ani skopiowanych testów.
