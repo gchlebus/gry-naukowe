@@ -754,38 +754,96 @@ fieldset:disabled {
 .letter .slot-2 {
   min-height: 110px;
 }
-.forest .assignment-paper {
-  padding: 0;
+.forest-photo-rows {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
+  gap: 12px;
+}
+.forest-photo-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px;
   background: #e8efdc;
+  border-radius: 8px;
 }
-.forest-art {
+.forest-photo-row figure {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+.forest-photo-row img {
+  display: block;
   width: 100%;
-  height: 440px;
-  object-fit: fill;
+  height: 190px;
+  object-fit: contain;
+  background: #dce5d0;
+  border-radius: 5px;
 }
-.forest .slots {
+.photo-number {
+  position: absolute;
+  top: 8px;
+  left: 8px;
   display: grid;
-  grid-template-rows: 40% 30% 18% 12%;
-  gap: 0;
-  height: 440px;
-  padding: 5px 10px 5px 0;
+  place-items: center;
+  background: #fffefa;
+  color: #405337;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
 }
 .forest .slot {
   min-height: 0;
-  margin: 4px 0;
-  padding: 8px;
-  gap: 3px;
+  margin: 0;
+  padding: 12px;
+  gap: 8px;
   justify-content: center;
 }
 .forest .slot small {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0;
 }
 .forest .slot > span {
-  font-size: 14px;
+  font-size: 17px;
+}
+.forest-question {
+  margin: 0 0 22px;
+}
+.forest-question img {
+  display: block;
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  background: #e8efdc;
+  border-radius: 8px;
+}
+.photo-note {
+  color: #66785b;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 12px 0 18px;
+}
+.photo-credits {
+  color: #66735e;
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 18px 0;
+  overflow-wrap: anywhere;
+}
+.photo-credits summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.photo-credits ul {
+  padding-left: 20px;
+}
+.photo-credits li {
+  margin: 8px 0;
+}
+.photo-credits a {
+  color: #49613e;
+  text-decoration: underline;
 }
 .copy-model {
   border-left: 3px solid #c6af78;
@@ -926,7 +984,8 @@ textarea::placeholder {
 .plant-large img {
   max-width: 100%;
   width: 240px;
-  height: auto;
+  height: 320px;
+  object-fit: contain;
   border-radius: 8px;
 }
 .plant-options {
@@ -944,7 +1003,7 @@ textarea::placeholder {
 }
 .plant-options img {
   width: 100%;
-  height: auto;
+  height: 230px;
   max-height: 230px;
   object-fit: contain;
   border-radius: 4px;
@@ -1509,7 +1568,10 @@ dialog::backdrop {
 }
 .plant-guide img {
   width: 100%;
-  height: auto;
+  height: 190px;
+  object-fit: contain;
+  background: #f0f3e9;
+  border-radius: 5px;
 }
 .plant-guide b {
   font-size: 12px;
@@ -1521,20 +1583,30 @@ dialog::backdrop {
   line-height: 1.8;
 }
 .forest-guide {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
-  align-items: center;
   margin: 22px 0;
 }
+.forest-guide figure {
+  margin: 0;
+  min-width: 0;
+}
 .forest-guide img {
-  width: 45%;
+  width: 100%;
+  height: 190px;
+  object-fit: contain;
+  background: #e8efdc;
   border-radius: 7px;
 }
-.forest-guide ol {
-  padding-left: 20px;
-  color: #7e926c;
-  font-size: 15px;
-  line-height: 3;
+.forest-guide b {
+  display: block;
+  font-size: 14px;
+  margin-top: 10px;
+}
+.forest-guide figcaption p {
+  font-size: 12px;
+  line-height: 1.7;
 }
 .backup {
   display: flex;
@@ -2001,8 +2073,23 @@ dialog::backdrop {
   .forest .slot > span {
     font-size: 12px;
   }
-  .forest .slots {
-    padding-right: 5px;
+  .forest-photo-row {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    padding: 6px;
+    gap: 7px;
+  }
+  .forest-photo-row img {
+    height: 135px;
+  }
+  .forest-question img {
+    height: 230px;
+  }
+  .photo-number {
+    top: 4px;
+    left: 4px;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
   }
   .forest .slot {
     padding: 5px;
@@ -2186,10 +2273,11 @@ dialog::backdrop {
   .forest-guide {
     gap: 13px;
   }
-  .forest-guide ol {
+  .forest-guide img {
+    height: 130px;
+  }
+  .forest-guide b {
     font-size: 12px;
-    line-height: 3.4;
-    padding-left: 16px;
   }
 }
 @media (max-width: 370px) {

@@ -1,4 +1,5 @@
 import { TOPICS, BY_TOPIC, PLANTS, LAYERS, SHAPES, AXES } from "./data.mjs";
+import { PHOTOS, PHOTO_BY_ID, FOREST_PHOTOS } from "./photos.mjs";
 import {
   KEY,
   fresh,
@@ -144,8 +145,21 @@ function choiceButton(id, text, selected, extra = "") {
   return `<button type="button" class="answer-choice ${selected ? "selected" : ""}" data-act="choice" data-choice="${esc(id)}" aria-pressed="${!!selected}">${extra}${esc(text)}<span class="choice-check" aria-hidden="true">${selected ? "✓" : ""}</span></button>`;
 }
 function plantImage(id) {
-  const p = PLANTS.find((p) => p.id === id);
-  return `<img src="./art/${id}.svg" alt="${esc(p.feature)}" width="400" height="440">`;
+  return photoImage(PHOTO_BY_ID.get(id));
+}
+function photoImage(photo) {
+  return `<img src="${photo.src}" alt="${esc(photo.alt)}" width="${photo.width}" height="${photo.height}" decoding="async">`;
+}
+function photoCredit(photo) {
+  return `<span>Fot. ${esc(photo.author)} · <a href="${photo.source}" target="_blank" rel="noopener">Źródło</a> · <a href="${photo.licenseUrl}" target="_blank" rel="noopener">${esc(photo.license)}</a></span>`;
+}
+function photoCredits(photos, labels = []) {
+  return `<details class="photo-credits"><summary>Autorzy i źródła zdjęć</summary><ul>${photos.map((photo, i) => `<li>${labels[i] ? `<b>${esc(labels[i])}:</b> ` : ""}${photoCredit(photo)}</li>`).join("")}</ul></details>`;
+}
+function assignmentSlot(name, i) {
+  const selected = draft.slots?.[i],
+    item = q.items.find((t) => t.id === selected);
+  return `<button type="button" class="slot slot-${i} ${item ? "is-filled" : ""}" data-act="slot" data-slot="${i}"><small>${esc(name)}</small><span>${item ? esc(item.text) : "Tutaj pasuje…"}</span></button>`;
 }
 function coin(v, act = false, i = 0) {
   return `<${act ? "button" : "span"} ${act ? 'type="button" data-act="coin" data-value="' + v + '" aria-label="Dołóż monetę ' + v + ' zł"' : ""} class="coin coin-${v}" ${!act ? 'aria-label="Moneta ' + v + ' zł"' : ""}><b>${v}</b><small>zł</small></${act ? "button" : "span"}>`;
@@ -181,13 +195,10 @@ function questionView() {
   switch (q.kind) {
     case "assign": {
       const used = new Set(draft.slots?.filter((x) => x != null) || []);
-      return `<div class="assignment ${q.scene}"><div class="token-bank" role="group" aria-label="Kafelki do ułożenia">${q.items.map((t) => `<button type="button" class="token ${selectedToken === t.id ? "selected" : ""}" data-act="token" data-token="${t.id}" aria-pressed="${selectedToken === t.id}" ${used.has(t.id) ? "disabled" : ""} draggable="true">${esc(t.text)}</button>`).join("")}</div><p class="assignment-instruction">${selectedToken !== null ? "Kafelek wybrany. Teraz kliknij pasujące miejsce." : "Wybierz kafelek, a potem miejsce. Kliknięcie wypełnionego miejsca odkłada kafelek."}</p><div class="assignment-paper">${q.scene === "forest" ? '<img class="forest-art" src="./art/forest.svg" alt="Przekrój lasu: cztery piętra oznaczone numerami od góry do dołu" width="400" height="440">' : ""}<div class="slots">${q.slots
-        .map((name, i) => {
-          const selected = draft.slots?.[i],
-            item = q.items.find((t) => t.id === selected);
-          return `<button type="button" class="slot slot-${i} ${item ? "is-filled" : ""}" data-act="slot" data-slot="${i}"><small>${esc(name)}</small><span>${item ? esc(item.text) : "Tutaj pasuje…"}</span></button>`;
-        })
-        .join("")}</div></div></div>`;
+      const bank = `<div class="token-bank" role="group" aria-label="Kafelki do ułożenia">${q.items.map((t) => `<button type="button" class="token ${selectedToken === t.id ? "selected" : ""}" data-act="token" data-token="${t.id}" aria-pressed="${selectedToken === t.id}" ${used.has(t.id) ? "disabled" : ""} draggable="true">${esc(t.text)}</button>`).join("")}</div><p class="assignment-instruction">${selectedToken !== null ? "Kafelek wybrany. Teraz kliknij pasujące miejsce." : "Wybierz kafelek, a potem miejsce. Kliknięcie wypełnionego miejsca odkłada kafelek."}</p>`;
+      if (q.scene === "forest")
+        return `<div class="assignment forest">${bank}<p class="photo-note">Cztery zdjęcia z różnych lasów. Oglądamy warstwy od najwyższej do najniższej.</p><div class="forest-photo-rows">${FOREST_PHOTOS.map((photo, i) => `<div class="forest-photo-row"><figure><span class="photo-number" aria-hidden="true">${i + 1}</span>${photoImage(photo)}</figure>${assignmentSlot(q.slots[i], i)}</div>`).join("")}</div>${photoCredits(FOREST_PHOTOS, q.slots)}</div>`;
+      return `<div class="assignment ${q.scene}">${bank}<div class="assignment-paper"><div class="slots">${q.slots.map(assignmentSlot).join("")}</div></div></div>`;
     }
     case "copy":
       return `<div class="copy-model"><span class="eyebrow">TWÓJ WZÓR</span><p>${esc(q.text)}</p></div><label class="input-label" for="copy-text">Przepisz tutaj</label><textarea id="copy-text" name="text" rows="3" maxlength="400" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Pisz spokojnie, po jednym wyrazie…">${esc(draft.text)}</textarea><p class="field-note">Polskie litery, wielkie litery i znaki przestankowe też są ważne.</p>`;
@@ -204,11 +215,11 @@ function questionView() {
     case "word":
       return `<div class="word-stage">${q.context ? "<span>" + esc(q.context) + "</span>" : ""}<strong>${esc(q.word)}</strong></div><label class="input-label" for="word-input">Twój wyraz</label><input id="word-input" name="text" maxlength="60" autocomplete="off" spellcheck="false" value="${esc(draft.text)}" placeholder="Wpisz zmieniony wyraz">`;
     case "plant-name":
-      return `<div class="plant-name"><div class="plant-large">${plantImage(q.plant)}</div><div class="choices">${q.options.map((o) => choiceButton(o.id, o.text, draft.choice === o.id)).join("")}</div></div>`;
+      return `<div class="plant-name"><div class="plant-large">${plantImage(q.plant)}</div><div class="choices">${q.options.map((o) => choiceButton(o.id, o.text, draft.choice === o.id)).join("")}</div></div>${photoCredits([PHOTO_BY_ID.get(q.plant)])}`;
     case "plant-pick":
-      return `<div class="plant-options">${q.options.map((o, i) => choiceButton(o.id, "Ilustracja " + String.fromCharCode(65 + i), draft.choice === o.id, plantImage(o.id))).join("")}</div>`;
+      return `<div class="plant-options">${q.options.map((o, i) => choiceButton(o.id, "Zdjęcie " + String.fromCharCode(65 + i), draft.choice === o.id, plantImage(o.id))).join("")}</div>${photoCredits(q.options.map((o) => PHOTO_BY_ID.get(o.id)), q.options.map((_, i) => "Zdjęcie " + String.fromCharCode(65 + i)))}`;
     case "choice":
-      return `<div class="choices two-columns">${q.options.map((o) => choiceButton(o.id, o.text, draft.choice === o.id)).join("")}</div>`;
+      return `${q.topic === "las" ? `<figure class="forest-question">${photoImage(FOREST_PHOTOS[Number(q.correct)])}</figure>` : ""}<div class="choices two-columns">${q.options.map((o) => choiceButton(o.id, o.text, draft.choice === o.id)).join("")}</div>${q.topic === "las" ? photoCredits([FOREST_PHOTOS[Number(q.correct)]]) : ""}`;
     case "mirror":
       return `<div class="mirror-layout">${mirrorGrid(q, draft)}<div class="mirror-legend"><span><i class="legend-source"></i> Gotowy wzór</span><span><i class="legend-draw"></i> Twoje odbicie</span><p>Zaznaczaj i odznaczaj kratki kliknięciem. Złota linia jest osią symetrii.</p><button type="button" class="text-button" data-act="clear-grid">Wyczyść swoje kratki ↶</button></div></div>`;
     case "axis":
@@ -311,12 +322,12 @@ function hint() {
   assisted = true;
   const t = BY_TOPIC.get(q.topic);
   modalOpen(
-    `<span class="eyebrow">PRZYPOMNIJMY SOBIE</span><h2>${t.short}</h2><p>${esc(t.rule)}</p>${q.topic === "rosliny" ? `<div class="plant-guide">${PLANTS.map((p) => `<div>${plantImage(p.id)}<b>${p.name}</b><p>${p.feature}</p></div>`).join("")}</div>` : q.topic === "las" ? `<div class="forest-guide"><img src="./art/forest.svg" alt="Cztery warstwy lasu z numerami"><ol>${LAYERS.map((l) => "<li>" + l + "</li>").join("")}</ol></div>` : ""}<button class="primary" data-act="close">Wracam do zadania →</button>`,
+    `<span class="eyebrow">PRZYPOMNIJMY SOBIE</span><h2>${t.short}</h2><p>${esc(t.rule)}</p>${q.topic === "rosliny" ? `<div class="plant-guide">${PLANTS.map((p) => `<div>${plantImage(p.id)}<b>${p.name}</b><p>${p.feature}</p></div>`).join("")}</div>${photoCredits(PLANTS.map((p) => PHOTO_BY_ID.get(p.id)), PLANTS.map((p) => p.name))}` : q.topic === "las" ? `<div class="forest-guide">${FOREST_PHOTOS.map((photo, i) => `<figure>${photoImage(photo)}<figcaption><b>${i + 1}. ${LAYERS[i]}</b><p>${esc(photo.alt)}</p></figcaption></figure>`).join("")}</div><p class="photo-note">Zdjęcia pochodzą z różnych lasów. Pokazują przykłady czterech warstw, a nie jeden wspólny przekrój.</p>${photoCredits(FOREST_PHOTOS, LAYERS)}` : ""}<button class="primary" data-act="close">Wracam do zadania →</button>`,
   );
 }
 function guide() {
   modalOpen(
-    `<span class="eyebrow">DLA DZIECKA I RODZICA</span><h2>Spokojna powtórka przed kartkówką</h2><p>Dziewięć tematów odpowiada podanej liście. Dział A: list, przepisywanie, warstwy lasu, rzeczowniki i czasowniki w obu liczbach oraz cztery rośliny uprawne. Dział B: symetria, zadania tekstowe, pełne złote i rachunki do 100.</p><h3>Dwa sposoby nauki</h3><p><b>Trening:</b> 5 zadań z wybranego tematu lub krótka runda A/B. Można poprawiać odpowiedzi, przypomnieć zasadę i obejrzeć rozwiązanie. <b>Próbna kartkówka:</b> 12 zadań A albo 8 zadań B. Odpowiedzi zapisujemy bez ujawniania wyniku; omówienie jest na końcu. To ćwiczenie, bez limitu czasu i bez oceny szkolnej.</p><p>Trudność kolejnych zadań treningowych dopasowuje się do ostatnich odpowiedzi. Po dwóch samodzielnych sukcesach wzrasta o jeden poziom, a po zadaniu wymagającym pomocy lub poprawki maleje. Próbna kartkówka ma stały poziom 2. Rachunki zaczynają się od czterech przykładów podanych przez rodzica.</p><p><b>Odpowiedzi zdaniem:</b> gra sprawdza liczbę, jednostkę, słowo odnoszące się do pytania, początek i zakończenie zdania. Dopuszcza różny szyk słów. Nie zastępuje sprawdzenia całej gramatyki przez rodzica. Warto kilka zdań przepisać też do zeszytu — pisanie ręczne wymaga osobnego ćwiczenia.</p><h3>Postępy na tym urządzeniu</h3><p>W treningu zapisujemy wynik każdego rozwiązanego lub odsłoniętego zadania. Wyniki próbnej kartkówki zapisujemy dopiero w podsumowaniu. Rozpoczęta runda jest w pamięci karty: odświeżenie lub powrót na mapę ją kończy, ale zachowuje wcześniej zapisane wyniki treningu i zakończonych kartkówek. Każdy adres i urządzenie ma osobny zapis. Nie wysyłamy odpowiedzi na serwer. Kopię można pobrać i wczytać poniżej; wczytanie zastępuje bieżący zapis.</p><div class="backup"><button class="secondary" data-act="export">Pobierz zapis JSON ↓</button><label class="secondary file-label">Wczytaj zapis<input id="import" type="file" accept=".json,application/json"></label></div><p class="fine">Przyrodę zweryfikowano w materiałach <a href="https://zpe.gov.pl/a/jakie-bogactwa-kryja-lasy/DOzDRZhuZ" target="_blank" rel="noopener">ZPE: las</a> i <a href="https://zpe.gov.pl/a/w-sadzie-i-na-polu/D10pKMQe4" target="_blank" rel="noopener">ZPE: pole</a>. Rysunki są autorskimi schematami, nie fotografiami. Nie każda odmiana rośliny wygląda identycznie.</p><p class="fine">Klawiatura: Tab wybiera przyciski, Enter lub spacja je uruchamia. W zadaniach z pisaniem Enter w polu wielowierszowym tworzy nową linię; użyj przycisku „Sprawdź”. Terminu części B nie pokazujemy z powodu sprzeczności dnia tygodnia i daty w notatce; zakres ćwiczeń jest kompletny.</p>`,
+    `<span class="eyebrow">DLA DZIECKA I RODZICA</span><h2>Spokojna powtórka przed kartkówką</h2><p>Dziewięć tematów odpowiada podanej liście. Dział A: list, przepisywanie, warstwy lasu, rzeczowniki i czasowniki w obu liczbach oraz cztery rośliny uprawne. Dział B: symetria, zadania tekstowe, pełne złote i rachunki do 100.</p><h3>Dwa sposoby nauki</h3><p><b>Trening:</b> 5 zadań z wybranego tematu lub krótka runda A/B. Można poprawiać odpowiedzi, przypomnieć zasadę i obejrzeć rozwiązanie. <b>Próbna kartkówka:</b> 12 zadań A albo 8 zadań B. Odpowiedzi zapisujemy bez ujawniania wyniku; omówienie jest na końcu. To ćwiczenie, bez limitu czasu i bez oceny szkolnej.</p><p>Trudność kolejnych zadań treningowych dopasowuje się do ostatnich odpowiedzi. Po dwóch samodzielnych sukcesach wzrasta o jeden poziom, a po zadaniu wymagającym pomocy lub poprawki maleje. Próbna kartkówka ma stały poziom 2. Rachunki zaczynają się od czterech przykładów podanych przez rodzica.</p><p><b>Odpowiedzi zdaniem:</b> gra sprawdza liczbę, jednostkę, słowo odnoszące się do pytania, początek i zakończenie zdania. Dopuszcza różny szyk słów. Nie zastępuje sprawdzenia całej gramatyki przez rodzica. Warto kilka zdań przepisać też do zeszytu — pisanie ręczne wymaga osobnego ćwiczenia.</p><h3>Postępy na tym urządzeniu</h3><p>W treningu zapisujemy wynik każdego rozwiązanego lub odsłoniętego zadania. Wyniki próbnej kartkówki zapisujemy dopiero w podsumowaniu. Rozpoczęta runda jest w pamięci karty: odświeżenie lub powrót na mapę ją kończy, ale zachowuje wcześniej zapisane wyniki treningu i zakończonych kartkówek. Każdy adres i urządzenie ma osobny zapis. Nie wysyłamy odpowiedzi na serwer. Kopię można pobrać i wczytać poniżej; wczytanie zastępuje bieżący zapis.</p><div class="backup"><button class="secondary" data-act="export">Pobierz zapis JSON ↓</button><label class="secondary file-label">Wczytaj zapis<input id="import" type="file" accept=".json,application/json"></label></div><p class="fine">Przyrodę zweryfikowano w materiałach <a href="https://zpe.gov.pl/a/jakie-bogactwa-kryja-lasy/DOzDRZhuZ" target="_blank" rel="noopener">ZPE: las</a> i <a href="https://zpe.gov.pl/a/w-sadzie-i-na-polu/D10pKMQe4" target="_blank" rel="noopener">ZPE: pole</a>. Rośliny i warstwy lasu poznajemy na prawdziwych fotografiach z Wikimedia Commons. Przy zdjęciach można rozwinąć autorów, źródła i licencje. Zdjęcia lasu pochodzą z różnych miejsc. Nie każda odmiana rośliny i nie każdy las wyglądają identycznie.</p>${photoCredits(PHOTOS, PHOTOS.map((photo) => photo.name))}<p class="fine">Klawiatura: Tab wybiera przyciski, Enter lub spacja je uruchamia. W zadaniach z pisaniem Enter w polu wielowierszowym tworzy nową linię; użyj przycisku „Sprawdź”. Terminu części B nie pokazujemy z powodu sprzeczności dnia tygodnia i daty w notatce; zakres ćwiczeń jest kompletny.</p>`,
   );
 }
 function celebrate() {

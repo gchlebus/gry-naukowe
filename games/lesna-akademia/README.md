@@ -10,9 +10,9 @@ Spokojna gra powtórkowa dla dziecka od około 7 lat, początkowo z rodzicem. Dz
 | --- | --- | --- |
 | A | Budowa listu | Pięć części listu: miejscowość i data, zwrot do adresata, treść, pożegnanie, podpis. Wybierz kafelek i miejsce; na komputerze można też przeciągać. |
 | A | Przepisywanie | Dwanaście autorskich tekstów. Sprawdzanie polskich znaków, wielkich liter i interpunkcji; wskazanie zmian, braków i nadmiarowych znaków. |
-| A | Warstwy lasu | Podpisywanie przekroju lasu i pytania o korony drzew, podszyt, runo leśne oraz ściółkę. |
+| A | Warstwy lasu | Dopasowywanie nazw do czterech prawdziwych zdjęć i pytania o korony drzew, podszyt, runo leśne oraz ściółkę. |
 | A | Liczba i część mowy | Rzeczowniki i czasowniki, liczba pojedyncza i mnoga, zmiana formy wyrazu. Obie części mowy pojawiają się od pierwszej rundy. |
-| A | Rośliny uprawne | Rozpoznawanie rzepaku, owsa, ziemniaków i pszenicy na autorskich schematach; wybór nazwy albo właściwego obrazka. |
+| A | Rośliny uprawne | Rozpoznawanie rzepaku, owsa, ziemniaków i pszenicy na prawdziwych fotografiach; wybór nazwy albo właściwego zdjęcia. |
 | B | Symetria | Odbijanie wzorów na siatce 6 × 6 względem pionowej i poziomej osi; wybór osi figur, także brak osi i figury z wieloma osiami. |
 | B | Zadania z treścią | Dwanaście historii. Dziecko zapisuje działanie z wynikiem oraz odpowiedź zdaniem. |
 | B | Pieniądze | Układanie kwoty z monet 1 zł, 2 zł i 5 zł, sumowanie portmonetki i obliczanie reszty. Liczymy pełne złote. |
@@ -66,11 +66,13 @@ npm test
 npm run check
 ```
 
-Jedenaście testów obejmuje wszystkie 14 formatów zadań i trzy poziomy, rachunki w zakresie 0–100, podane cztery przykłady, polskie znaki i wyrównywanie błędów przepisywania, dopasowania, odbicia na kratkach, rzeczywistą geometrię osi figur, działania i odpowiedzi zdaniem, pieniądze, cztery rośliny, przeplatanie gramatyki, adaptację oraz walidację zapisu. `check` sprawdza składnię wszystkich modułów i podstawowe zasoby.
+Jedenaście testów obejmuje wszystkie 14 formatów zadań i trzy poziomy, rachunki w zakresie 0–100, podane cztery przykłady, polskie znaki i wyrównywanie błędów przepisywania, dopasowania, odbicia na kratkach, rzeczywistą geometrię osi figur, działania i odpowiedzi zdaniem, pieniądze, cztery rośliny, przeplatanie gramatyki, adaptację oraz walidację zapisu. `check` sprawdza składnię wszystkich modułów, zasoby oraz kompletność atrybucji i sumy SHA-256 ośmiu pobranych fotografii.
 
 Nie ma kroku budowania. **`dist/` jest kompletną stroną statyczną śledzoną w Git.** Hosting musi serwować `.mjs` jako JavaScript. `npm start` uruchamia ten sam lokalny serwer. `.openai/hosting.json` zawiera tożsamość publikacji Sites i nie jest potrzebny do lokalnej zabawy.
 
 Ręcznie sprawdzono w Brave: zadanie z każdego z dziewięciu tematów, poprawianie błędu polskiej litery, układanie listu i lasu kliknięciami, pomoc z ilustracjami roślin, zapis odpowiedzi zdaniem, monety, odbicie na siatce, wybór osi oraz całą próbną kartkówkę B (jedna poprawna odpowiedź i siedem pominięć), jej odroczone ocenianie i podsumowanie. Układ strony głównej i listu obejrzano w emulacji **390 × 844 px**; to nie test na fizycznym telefonie. Przeciąganie jest dodatkową metodą i nie było osobnym testem ręcznym.
+
+Po podmianie ilustracji na fotografie dodatkowo sprawdzono w Brave: cztery zdjęcia roślin i wybór poprawnej odpowiedzi, pomoc z nazwami i atrybucjami, pytania ze zdjęciami lasu, dopasowanie wszystkich czterech nazw warstw oraz poprawne ocenienie. Zdjęcia lasu i pomoc obejrzano także w emulacji 390 × 844 px.
 
 ## Postępy i dane
 
@@ -85,7 +87,9 @@ Menu **Dla rodzica → Pobierz zapis JSON** pozwala zrobić kopię. **Wczytaj za
 - `dist/js/data.mjs` — tematy, teksty, słowa, rośliny, figury i zadania tekstowe.
 - `dist/js/logic.mjs` — generowanie zadań, ocenianie, adaptacja i zapis.
 - `dist/js/app.mjs` — interfejs i przebieg rund.
-- `dist/art/` — własne SVG: lisek, las i schematy roślin; bez zewnętrznych ilustracji i fontów.
+- `dist/art/` — dekoracyjny lisek SVG; nie służy do rozpoznawania roślin ani warstw lasu.
+- `dist/photos/` — osiem prawdziwych fotografii z Wikimedia Commons, zapisanych lokalnie.
+- `dist/js/photos.mjs` — autorzy, źródła, licencje, adresy pobranych plików i sumy SHA-256 fotografii.
 - `dist/styles.css` — responsywny wygląd i efekty sukcesu.
 
-Treści, ilustracje i krótkie dźwięki są autorskie. Źródła użyte do sprawdzenia przyrody opisano w [SOURCES.md](SOURCES.md). Rysunki celowo pokazują cechy rozpoznawcze, nie wszystkie odmiany roślin. Zdjęcia ani skany podręcznika nie są częścią gry.
+Treści ćwiczeń, dekoracyjny lisek i krótkie dźwięki są autorskie. Fotografie mają osobnych autorów i licencje: pełna lista znajduje się w [SOURCES.md](SOURCES.md), a rozwijane podpisy są też dostępne przy zdjęciach oraz w menu „Dla rodzica”. Nie wygenerowano zdjęć ani nie dorysowano cech roślin. Pliki zachowują pobraną zawartość; CSS dopasowuje cały kadr bez rozciągania. Cztery fotografie lasu pochodzą z różnych miejsc i pokazują przykłady warstw, nie jeden wspólny przekrój. Na zdjęciu ziemniaka są liście i kwiaty; bulw pod ziemią nie widać. Odmiany roślin i struktura lasów mogą się różnić. Zdjęcia ani skany podręcznika nie są częścią gry.

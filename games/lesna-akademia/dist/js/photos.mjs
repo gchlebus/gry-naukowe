@@ -1,0 +1,117 @@
+// Prawdziwe fotografie pobrane z Wikimedia Commons. Autorzy i licencje: SOURCES.md.
+export const PHOTOS = [
+  {
+    "id": "rzepak",
+    "name": "Rzepak",
+    "alt": "Żółte kwiaty z czterema płatkami na rozgałęzionej łodydze.",
+    "src": "./photos/rzepak.jpg",
+    "width": 960,
+    "height": 720,
+    "author": "Michael Brandtner",
+    "source": "https://commons.wikimedia.org/wiki/File:Brassica_napus_flower.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Brassica_napus_flower.jpg/960px-Brassica_napus_flower.jpg",
+    "sha256": "84345bb4ef367b4c44f45c5740188b431cb19ef0ed0bacc603b815af5ab84533"
+  },
+  {
+    "id": "owies",
+    "name": "Owies",
+    "alt": "Luźny kwiatostan z osobno zwisającymi kłoskami.",
+    "src": "./photos/owies.jpg",
+    "width": 960,
+    "height": 1341,
+    "author": "Andreas Trepte",
+    "source": "https://commons.wikimedia.org/wiki/File:Avena_sativa_II.jpg",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Avena_sativa_II.jpg/960px-Avena_sativa_II.jpg",
+    "sha256": "8bbd74109ba9a6408358a5c5c6420c687baac95fbfbf2da624c454d01fb6fdab"
+  },
+  {
+    "id": "ziemniaki",
+    "name": "Ziemniaki",
+    "alt": "Złożone zielone liście i białe kwiaty z żółtymi środkami.",
+    "src": "./photos/ziemniaki.jpg",
+    "width": 960,
+    "height": 1281,
+    "author": "Philmarin",
+    "source": "https://commons.wikimedia.org/wiki/File:S._tuberosum-5.JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/S._tuberosum-5.JPG/960px-S._tuberosum-5.JPG",
+    "sha256": "79c7c3d09dcac5f0f07c63cec7ee8283b628ab7441d08cde03847840d895d6d5"
+  },
+  {
+    "id": "pszenica",
+    "name": "Pszenica",
+    "alt": "Zwarty złoty kłos na szczycie źdźbła.",
+    "src": "./photos/pszenica.jpg",
+    "width": 900,
+    "height": 1312,
+    "author": "Sten Porse",
+    "source": "https://commons.wikimedia.org/wiki/File:Triticum-aestivum-ear.JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Triticum-aestivum-ear.JPG",
+    "sha256": "e827f72152277096be38481ccc4eccaa39e136faca80313d34db7826510afc84"
+  },
+  {
+    "id": "korony",
+    "name": "Korony drzew",
+    "alt": "Widok w górę na gałęzie i liście wysokich drzew.",
+    "src": "./photos/korony.jpg",
+    "width": 960,
+    "height": 638,
+    "author": "David Patte / U.S. Fish and Wildlife Service",
+    "source": "https://commons.wikimedia.org/wiki/File:Looking_Up_at_an_Old_Growth_Canopy_-_DPLA_-_94d913f7cd4bb2255353e45a1303609a.jpg",
+    "license": "Domena publiczna",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/Template:PD-USGov-FWS",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Looking_Up_at_an_Old_Growth_Canopy_-_DPLA_-_94d913f7cd4bb2255353e45a1303609a.jpg/960px-Looking_Up_at_an_Old_Growth_Canopy_-_DPLA_-_94d913f7cd4bb2255353e45a1303609a.jpg",
+    "sha256": "1374c77d3337536e04778e6753feae2eaf601734a2497f20e4a0aeb6211b4214"
+  },
+  {
+    "id": "podszyt",
+    "name": "Podszyt",
+    "alt": "Krzewy i niskie drzewka pod wysokimi drzewami.",
+    "src": "./photos/podszyt.jpg",
+    "width": 960,
+    "height": 720,
+    "author": "David Pashley",
+    "source": "https://commons.wikimedia.org/wiki/File:Woodland_understory_-_geograph.org.uk_-_7457947.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Woodland_understory_-_geograph.org.uk_-_7457947.jpg/960px-Woodland_understory_-_geograph.org.uk_-_7457947.jpg",
+    "sha256": "902a0df36170a47f6df71d646522ced4b9ac47ec4442d0de145ab3ebd92b6df0"
+  },
+  {
+    "id": "runo",
+    "name": "Runo leśne",
+    "alt": "Paprocie rosnące nisko między pniami drzew.",
+    "src": "./photos/runo.jpg",
+    "width": 5616,
+    "height": 3744,
+    "author": "ForestWander",
+    "source": "https://commons.wikimedia.org/wiki/File:Forest-floor-spring-ferns_-_West_Virginia_-_ForestWander.jpg",
+    "license": "CC BY-SA 3.0 US",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/us/deed.en",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/5/58/Forest-floor-spring-ferns_-_West_Virginia_-_ForestWander.jpg",
+    "sha256": "8f466c1aa0bcc7c4f8dd617a6c34f4492790db87e8cefb4d6404eb0adf173b65"
+  },
+  {
+    "id": "sciolka",
+    "name": "Ściółka",
+    "alt": "Opadłe liście i gałązki leżące na ziemi.",
+    "src": "./photos/sciolka.jpg",
+    "width": 3960,
+    "height": 2970,
+    "author": "C. Boothman / U.S. Forest Service",
+    "source": "https://commons.wikimedia.org/wiki/File:20241028-R9HMNF-CB-001_Leafy_ground.jpg",
+    "license": "Domena publiczna",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/Template:PD-USGov-USDA-FS",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/b/bd/20241028-R9HMNF-CB-001_Leafy_ground.jpg",
+    "sha256": "c52bc7568250f11aa68eb7925841d6217d1c78092b5c0a69384c6b9dad3042b2"
+  }
+];
+export const PHOTO_BY_ID = new Map(PHOTOS.map((photo) => [photo.id, photo]));
+export const FOREST_PHOTOS = PHOTOS.slice(4);

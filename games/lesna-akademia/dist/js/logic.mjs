@@ -164,7 +164,7 @@ export function task(topic, serial = 0, level = 2, seed = 1) {
         ...base,
         kind: "assign",
         scene: "forest",
-        prompt: "Podpisz warstwy lasu. Zacznij od tej, która jest najwyżej.",
+        prompt: "Dopasuj nazwy warstw lasu do zdjęć. Zacznij od tej, która jest najwyżej.",
         slots: [
           "1 · Najwyżej",
           "2 · Niżej",
@@ -256,7 +256,7 @@ export function task(topic, serial = 0, level = 2, seed = 1) {
       : {
           ...base,
           kind: "plant-pick",
-          prompt: `Znajdź na ilustracjach: ${plant.name.toLowerCase()}.`,
+          prompt: `Znajdź na zdjęciach: ${plant.name.toLowerCase()}.`,
           options: shuffle(
             PLANTS.map((p) => ({ id: p.id, text: p.feature })),
             random,

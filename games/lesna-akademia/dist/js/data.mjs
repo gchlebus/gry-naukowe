@@ -227,7 +227,7 @@ export const PLANTS = [
     id: "ziemniaki",
     name: "Ziemniaki",
     feature:
-      "Zielona roślina z szerokimi listkami i jasnymi kwiatami. Pod ziemią widać owalne bulwy.",
+      "Złożone zielone liście i białe kwiaty z żółtymi środkami. Bulwy rosną pod ziemią — na zdjęciu ich nie widać.",
     note: "To ziemniak. Jadalne bulwy tworzą się pod ziemią; nie są korzeniami.",
   },
   {
