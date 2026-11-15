@@ -1540,3 +1540,343 @@ dialog::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+/* Equation films: one real equation at a time, with identical operations. */
+.equation-motion {
+  margin-bottom: 16px;
+}
+.motion-board {
+  overflow: visible;
+  position: relative;
+}
+.motion-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr);
+  align-items: center;
+  padding: 25px 17px 10px;
+  min-height: 200px;
+}
+.motion-side {
+  text-align: center;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.motion-terms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  min-height: 62px;
+  margin: 20px 0 12px;
+}
+.motion-term {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dfc49c;
+  border-radius: 9px;
+  background: #fae8c9;
+  color: #796040;
+  min-height: 57px;
+  min-width: 47px;
+  padding: 10px;
+  font-size: 28px;
+  line-height: 1;
+  position: relative;
+  box-shadow: 0 4px 0 #cfb48026;
+  z-index: 2;
+}
+.motion-term b {
+  font-weight: 550;
+}
+.motion-x {
+  background: #e0ecd8;
+  border-color: #b4c9a7;
+  color: #367764;
+}
+.motion-sign {
+  font-weight: 400;
+  font-size: 0.8em;
+}
+.motion-sign:empty {
+  display: none;
+}
+.motion-equals {
+  color: #6d977e;
+  font-size: 34px;
+  text-align: center;
+}
+.motion-selected {
+  outline: 3px solid #cba455;
+  outline-offset: 5px;
+}
+.motion-added {
+  border: 2px solid #b99049;
+  background: #fff5da;
+  box-shadow: 0 0 0 4px #d9ba6a22;
+}
+.motion-cancel {
+  background: #f2f0e7;
+  border-color: #c6c6b3;
+  color: #9a9b8e;
+}
+.motion-cancel::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  height: 3px;
+  border-radius: 2px;
+  background: #be8859;
+  transform: rotate(-22deg);
+}
+.motion-under {
+  min-height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #7c8b70;
+  line-height: 1.5;
+  padding-bottom: 5px;
+}
+.motion-same {
+  color: #8b672e;
+  background: #fbefd1;
+  border: 1px solid #e6d7af;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.motion-zero {
+  color: #367764;
+  background: #e5edda;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.motion-shortcut {
+  min-height: 36px;
+  text-align: center;
+  font-size: 12px;
+  color: #74906c;
+  padding: 6px 10px 15px;
+  line-height: 1.5;
+}
+.motion-dividing .motion-bracket {
+  border: 1px solid #aabf98;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  margin: 6px 4px 8px;
+}
+.motion-divisor {
+  display: inline-flex;
+  background: #e3edd8;
+  color: #367764;
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+.motion-chosen {
+  outline: 3px solid #bf9e52;
+  outline-offset: 3px;
+}
+.motion-other-group {
+  opacity: 0.5;
+}
+.motion-ghost {
+  pointer-events: none;
+  z-index: 3;
+}
+.motion-panel {
+  border: 1px solid #cbd9bd;
+  border-radius: 8px;
+  background: #f0f4e7;
+  padding: 22px;
+  margin-top: 16px;
+}
+.motion-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.motion-top .eyebrow {
+  letter-spacing: 1px;
+  font-size: 8px;
+}
+.motion-running {
+  font-size: 10px;
+  color: #7e9071;
+}
+.motion-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 19px 0 17px;
+}
+.motion-dots button {
+  min-width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #cbd7bb;
+  background: #fffdf4;
+  color: #829372;
+  font-size: 13px;
+}
+.motion-dots button[aria-current="step"] {
+  background: #407963;
+  border-color: #407963;
+  color: #fffdf4;
+  box-shadow: 0 0 0 4px #ccd9bd;
+}
+.motion-dots button.is-done {
+  background: #e3ead5;
+  color: #407963;
+}
+.motion-dots > span {
+  width: 24px;
+  height: 1px;
+  background: #d0d9c2;
+}
+.motion-narration {
+  min-height: 105px;
+}
+.motion-narration h3 {
+  font-size: 21px;
+  margin: 0 0 9px;
+}
+.motion-narration p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #627854;
+  margin-bottom: 18px;
+  max-width: 620px;
+}
+.motion-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.motion-controls .primary {
+  min-width: 125px;
+  justify-content: center;
+  min-height: 43px;
+  padding: 10px 18px;
+}
+.motion-controls .secondary {
+  min-width: 43px;
+  font-size: 17px;
+}
+.motion-controls .text-button {
+  font-size: 11px;
+  padding: 10px 6px;
+}
+.motion-finish {
+  margin-left: auto;
+}
+.motion-tip {
+  font-size: 10px;
+  color: #829372;
+  margin: 13px 0 0;
+}
+.motion-replay {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 11px 0;
+  color: #508065;
+  font-size: 12px;
+  text-align: left;
+}
+.motion-replay span {
+  color: #8e9b80;
+  font-size: 10px;
+}
+.motion-replay:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 740px) {
+  .motion-stage {
+    grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
+    padding: 20px 9px 5px;
+    min-height: 190px;
+  }
+  .motion-term {
+    font-size: 23px;
+    min-width: 37px;
+    min-height: 46px;
+    gap: 3px;
+    padding: 8px;
+  }
+  .motion-terms {
+    gap: 5px;
+    margin: 17px 0 13px;
+  }
+  .motion-side .side-label {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  .motion-under {
+    font-size: 8px;
+    min-height: 35px;
+  }
+  .motion-same {
+    padding: 4px 6px;
+  }
+  .motion-equals {
+    font-size: 28px;
+  }
+  .motion-shortcut {
+    font-size: 11px;
+    padding-bottom: 12px;
+  }
+  .motion-panel {
+    padding: 17px;
+  }
+  .motion-top {
+    align-items: start;
+  }
+  .motion-top .eyebrow {
+    font-size: 7px;
+  }
+  .motion-running {
+    font-size: 8px;
+    white-space: nowrap;
+  }
+  .motion-narration {
+    min-height: 130px;
+  }
+  .motion-narration h3 {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+  .motion-narration p {
+    font-size: 12px;
+  }
+  .motion-controls {
+    gap: 8px;
+  }
+  .motion-controls .primary {
+    min-width: 112px;
+  }
+  .motion-finish {
+    margin-left: 0;
+  }
+  .motion-controls .motion-speed {
+    margin-left: auto;
+  }
+}

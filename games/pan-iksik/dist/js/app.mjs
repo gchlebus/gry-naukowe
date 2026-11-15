@@ -12,6 +12,8 @@ import {
   replay,
   check,
 } from "./engine.mjs";
+import { explainChange } from "./sequence.mjs";
+import { mountMotion } from "./motion.mjs";
 import { KEY, fresh, parse } from "./state.mjs";
 import { mascot, landscape } from "./art.mjs";
 const $ = (s) => document.querySelector(s),
@@ -33,7 +35,9 @@ let state = fresh(),
   warning = "",
   chapterFilter = 0,
   dragged = null,
-  audio = null;
+  audio = null,
+  motion = null,
+  lastMotion = null;
 try {
   const raw = localStorage.getItem(KEY);
   if (raw) state = parse(raw);
@@ -76,6 +80,7 @@ function open(id) {
   if (state.lesson !== id || win) {
     state.steps = [];
   }
+  lastMotion = null;
   state.lesson = id;
   state.page = "play";
   pending = null;
@@ -168,14 +173,44 @@ function winPanel(l, x) {
     next = LESSONS[l.number % LESSONS.length];
   return `<section class="win-panel"><span class="win-star">★</span><span class="eyebrow">MAŁE OLŚNIENIE!</span><h2>Tak! x = ${x}</h2><p>Podstawiamy ${x} zamiast każdego x w <b>początkowym równaniu</b>.</p><div class="substitution"><span>${substitute(b.left, x)}</span><b>=</b><span>${substitute(b.right, x)}</span></div><div class="check-equal">${r.left} = ${r.right} <span>✓ Obie strony się zgadzają!</span></div><p>${progress() === 30 ? "Wszystkie 30 przygód odkryte. Jesteś przyjacielem równowagi!" : "Kolejna tajemnica odkryta. Dobra robota, odkrywco!"}</p><div class="win-actions"><button class="primary" data-act="open" data-id="${next.id}">${l.number === 30 ? "Zagrajmy jeszcze raz" : "Kolejna przygoda"} →</button><button class="text-button" data-act="map">Mapa przygód</button></div></section>`;
 }
+function stopMotion() {
+  motion?.destroy();
+  motion = null;
+}
+function showMotion(plan) {
+  lastMotion = plan;
+  playView();
+  const host = document.createElement("div");
+  $(".equation-board").replaceWith(host);
+  $("#action-panel").hidden = true;
+  $("#replay-motion").hidden = true;
+  motion = mountMotion(host, plan, () => {
+    motion = null;
+    playView();
+    announce(`Gotowe. ${equation(plan.after)}`);
+    ($("#answer") || $("#replay-motion"))?.focus({ preventScroll: true });
+  });
+  host
+    .querySelector('[data-motion-act="pause"]')
+    .focus({ preventScroll: true });
+  host.scrollIntoView({ block: "nearest", behavior: "instant" });
+}
 function playView() {
+  stopMotion();
   const l = current(),
     { board: b, log } = replay(l, state.steps),
     c = CHAPTERS[l.chapter - 1];
-  main.innerHTML = `<div class="play-top"><button class="text-button" data-act="map">← Mapa przygód</button><span>${c.title} <i>•</i> Zadanie ${l.number} z 30</span><button class="text-button" data-act="reset">↻ Od początku</button></div><div class="play-heading"><div><span class="eyebrow">PRZYGODA ${String(l.number).padStart(2, "0")}</span><h1>${l.title}</h1></div><span class="lesson-badge">${c.icon}</span></div><div class="play-layout"><div class="workspace"><section class="problem-story"><span>✉</span><p>${l.story}</p></section><section class="equation-board ${pending ? "planning" : ""}" aria-label="Twoje równanie"><div class="board-top"><span>NASZE RÓWNANIE</span><span class="balance-badge">⚖ W równowadze</span></div><div class="equation-row">${sideMarkup(b, "left")}<div class="equals" aria-label="równa się">=</div>${sideMarkup(b, "right")}</div><p class="board-caption">${win ? "Zagadka rozwiązana!" : ready(b) ? "Po lewej samo x. Teraz policz prawą stronę." : "Kliknij składnik. Możesz też przeciągnąć go za strzałkę na drugą stronę."}</p></section>${win ? winPanel(l, sums(b.right).n) : actionPanel(b)}${message ? `<p class="feedback" role="status">${esc(message)}</p>` : ""}<div class="workspace-actions"><button class="text-button" data-act="undo" ${!state.steps.length || win ? "disabled" : ""}>↶ Cofnij ruch</button><span>Bez pośpiechu. Każdy ruch można cofnąć.</span></div>${log.length ? `<details class="history" ${state.steps.length <= 3 ? "open" : ""}><summary>Nasza droga · ${state.steps.length} ${state.steps.length === 1 ? "ruch" : "ruchy"}</summary><ol>${log.map((r) => `<li><small>${esc(r.operation)}</small><span>${esc(equation(r.board))}</span></li>`).join("")}</ol></details>` : ""}</div><aside class="companion"><div class="character ${win ? "happy" : ""}">${mascot(win)}</div><span class="name-tag">PAN IKSIK <span>twój kompan odkryć</span></span><div class="companion-note"><span>MAŁA PODPOWIEDŹ</span><p>${win ? "Zostawiliśmy samo x i sprawdziliśmy wynik. Właśnie tak pracują odkrywcy!" : hint ? hintText(b) : "Nie musisz znać odpowiedzi od razu. Zróbmy jeden mały krok."}</p><button class="secondary" data-act="hint" ${win ? "disabled" : ""}>${hint ? "Podświetl właściwy ruch" : "Pomóż mi, Iksiku"} ✧</button></div><div class="rule-card"><b>Zapamiętaj</b><p>Gdy dodajemy lub odejmujemy coś po jednej stronie, robimy <strong>to samo po drugiej</strong>.</p><span>Tak dbamy o równowagę.</span></div></aside></div>`;
+  lastMotion = state.steps.length
+    ? explainChange(
+        replay(l, state.steps.slice(0, -1)).board,
+        state.steps.at(-1),
+      )
+    : null;
+  main.innerHTML = `<div class="play-top"><button class="text-button" data-act="map">← Mapa przygód</button><span>${c.title} <i>•</i> Zadanie ${l.number} z 30</span><button class="text-button" data-act="reset">↻ Od początku</button></div><div class="play-heading"><div><span class="eyebrow">PRZYGODA ${String(l.number).padStart(2, "0")}</span><h1>${l.title}</h1></div><span class="lesson-badge">${c.icon}</span></div><div class="play-layout"><div class="workspace"><section class="problem-story"><span>✉</span><p>${l.story}</p></section><section class="equation-board ${pending ? "planning" : ""}" aria-label="Twoje równanie"><div class="board-top"><span>NASZE RÓWNANIE</span><span class="balance-badge">⚖ W równowadze</span></div><div class="equation-row">${sideMarkup(b, "left")}<div class="equals" aria-label="równa się">=</div>${sideMarkup(b, "right")}</div><p class="board-caption">${win ? "Zagadka rozwiązana!" : ready(b) ? "Po lewej samo x. Teraz policz prawą stronę." : "Kliknij składnik. Możesz też przeciągnąć go za strzałkę na drugą stronę."}</p></section><div id="action-panel">${win ? winPanel(l, sums(b.right).n) : actionPanel(b)}</div>${lastMotion && !win ? '<button id="replay-motion" class="motion-replay" data-act="replay-motion">↻ Pokaż ostatni ruch jeszcze raz <span>krok po kroku</span></button>' : ""}${message ? `<p class="feedback" role="status">${esc(message)}</p>` : ""}<div class="workspace-actions"><button class="text-button" data-act="undo" ${!state.steps.length || win ? "disabled" : ""}>↶ Cofnij ruch</button><span>Bez pośpiechu. Każdy ruch można cofnąć.</span></div>${log.length ? `<details class="history" ${state.steps.length <= 3 ? "open" : ""}><summary>Nasza droga · ${state.steps.length} ${state.steps.length === 1 ? "ruch" : "ruchy"}</summary><ol>${log.map((r) => `<li><small>${esc(r.operation)}</small><span>${esc(equation(r.board))}</span></li>`).join("")}</ol></details>` : ""}</div><aside class="companion"><div class="character ${win ? "happy" : ""}">${mascot(win)}</div><span class="name-tag">PAN IKSIK <span>twój kompan odkryć</span></span><div class="companion-note"><span>MAŁA PODPOWIEDŹ</span><p>${win ? "Zostawiliśmy samo x i sprawdziliśmy wynik. Właśnie tak pracują odkrywcy!" : hint ? hintText(b) : "Nie musisz znać odpowiedzi od razu. Zróbmy jeden mały krok."}</p><button class="secondary" data-act="hint" ${win ? "disabled" : ""}>${hint ? "Podświetl właściwy ruch" : "Pomóż mi, Iksiku"} ✧</button></div><div class="rule-card"><b>Zapamiętaj</b><p>Gdy dodajemy lub odejmujemy coś po jednej stronie, robimy <strong>to samo po drugiej</strong>.</p><span>Tak dbamy o równowagę.</span></div></aside></div>`;
   if (win) $("#answer")?.blur();
 }
 function render() {
+  stopMotion();
   header();
   state.page === "home" ? homeView() : playView();
 }
@@ -191,7 +226,7 @@ function map() {
   if (!modal.open) modal.showModal();
 }
 function about() {
-  modal.innerHTML = `<div class="modal-body about"><button class="modal-close" data-act="close" aria-label="Zamknij okno">×</button><span class="eyebrow">DLA MAŁYCH ODKRYWCÓW I RODZICÓW</span><h2>Jak pomóc Panu Iksikowi?</h2><p><b>x to tajemnicza liczba.</b> Nasz cel: zostawić samo x po lewej stronie i obliczyć prawą.</p><ol><li>Kliknij składnik lub przeciągnij go na drugą stronę.</li><li>Przeczytaj, jakie działanie wykonamy <b>po obu stronach</b>, i zatwierdź ruch.</li><li>Gdy po lewej zostanie samo x, wpisz jego wartość. Sprawdzimy ją w początkowym równaniu.</li></ol><p>Przeniesienie <b>+3</b> oznacza odjęcie 3 po obu stronach: po drugiej stronie pojawia się <b>−3</b>. Przy zamianie całych stron znaki się nie zmieniają. <b>2x oznacza 2 × x</b>; dzielenie obu stron jest osobnym działaniem.</p><p>30 zadań w pięciu rozdziałach. Wszystkie są dostępne od razu; zacznij od pierwszego. Za każdą rozwiązaną przygodę dostajesz jedną gwiazdkę. Podpowiedzi i pomyłki nie odbierają gwiazdek. W trudniejszych zadaniach mogą pojawić się ujemne składniki.</p><p>Postępy zapisują się w tej przeglądarce. Inny adres lub urządzenie ma osobny zapis. Pobierz kopię przed wyczyszczeniem danych. Wczytanie kopii zastępuje bieżący zapis.</p><div class="backup"><button class="secondary" data-act="export">Pobierz zapis JSON ↓</button><label class="secondary file-label">Wczytaj zapis<input type="file" id="import" accept=".json,application/json"></label></div><p class="fine">Gra działa lokalnie, nie wysyła odpowiedzi i nie wymaga konta ani dodatkowych usług. Ilustracje i dźwięki są autorskie. Klawiatura: Tab wybiera przycisk, Enter lub spacja go uruchamia. Na telefonie wystarczy dotykać składników.</p></div>`;
+  modal.innerHTML = `<div class="modal-body about"><button class="modal-close" data-act="close" aria-label="Zamknij okno">×</button><span class="eyebrow">DLA MAŁYCH ODKRYWCÓW I RODZICÓW</span><h2>Jak pomóc Panu Iksikowi?</h2><p><b>x to tajemnicza liczba.</b> Nasz cel: zostawić samo x po lewej stronie i obliczyć prawą.</p><ol><li>Kliknij składnik lub przeciągnij go na drugą stronę.</li><li>Przeczytaj, jakie działanie wykonamy <b>po obu stronach</b>, i zatwierdź ruch. Obejrzyj pokaz: możesz go zatrzymać, wybierać kroki numerami lub włączyć wolniejsze tempo.</li><li>Gdy po lewej zostanie samo x, wpisz jego wartość. Sprawdzimy ją w początkowym równaniu.</li></ol><p>Przeniesienie <b>+3</b> oznacza odjęcie 3 po obu stronach: po drugiej stronie pojawia się <b>−3</b>. Przy zamianie całych stron znaki się nie zmieniają. <b>2x oznacza 2 × x</b>; dzielenie obu stron jest osobnym działaniem.</p><p>Przycisk „Pokaż ostatni ruch jeszcze raz” powtarza pokaz bez wykonywania kolejnego działania. Strzałki w pokazie przełączają kroki i zatrzymują odtwarzanie. „Zakończ pokaz” odsłania dalszą część zadania. Przy systemowym ograniczeniu ruchu pokaz startuje zatrzymany, bez przemieszczania kafelków.</p><p>30 zadań w pięciu rozdziałach. Wszystkie są dostępne od razu; zacznij od pierwszego. Za każdą rozwiązaną przygodę dostajesz jedną gwiazdkę. Podpowiedzi i pomyłki nie odbierają gwiazdek. W trudniejszych zadaniach mogą pojawić się ujemne składniki.</p><p>Postępy zapisują się w tej przeglądarce. Inny adres lub urządzenie ma osobny zapis. Pobierz kopię przed wyczyszczeniem danych. Wczytanie kopii zastępuje bieżący zapis.</p><div class="backup"><button class="secondary" data-act="export">Pobierz zapis JSON ↓</button><label class="secondary file-label">Wczytaj zapis<input type="file" id="import" accept=".json,application/json"></label></div><p class="fine">Gra działa lokalnie, nie wysyła odpowiedzi i nie wymaga konta ani dodatkowych usług. Ilustracje i dźwięki są autorskie. Klawiatura: Tab wybiera przycisk, Enter lub spacja go uruchamia. Na telefonie wystarczy dotykać składników.</p></div>`;
   if (!modal.open) modal.showModal();
 }
 function celebrate() {
@@ -237,8 +272,13 @@ document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-act]");
   if (!el || el.disabled) return;
   const a = el.dataset.act;
+  if (motion && a !== "sound") {
+    stopMotion();
+    playView();
+  }
   const { board: b } = replay(current(), state.steps);
   if (a === "home") home();
+  else if (a === "replay-motion" && lastMotion) showMotion(lastMotion);
   else if (a === "start") open(state.lesson);
   else if (a === "map") {
     chapterFilter = 0;
@@ -278,15 +318,15 @@ document.addEventListener("click", (e) => {
       return;
     }
     if (pending) {
+      const plan = explainChange(b, pending);
       state.steps.push(pending);
       pending = null;
       message = "";
       save();
-      playView();
-      announce(equation(replay(current(), state.steps).board));
-      $("#answer")?.focus({ preventScroll: true });
+      showMotion(plan);
     }
   } else if (a === "undo") {
+    lastMotion = null;
     state.steps.pop();
     pending = null;
     message = "";
@@ -295,6 +335,7 @@ document.addEventListener("click", (e) => {
     save();
     playView();
   } else if (a === "reset") {
+    lastMotion = null;
     state.steps = [];
     pending = null;
     message = "";
@@ -352,6 +393,7 @@ document.addEventListener("change", async (e) => {
   try {
     if (file.size > 100000) throw Error("Plik jest za duży.");
     state = parse(await file.text());
+    lastMotion = null;
     pending = null;
     win = false;
     hint = false;

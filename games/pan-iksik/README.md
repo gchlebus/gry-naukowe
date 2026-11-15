@@ -21,11 +21,24 @@ Zadania liczbowe ze zdjęcia użytkownika wykorzystano jako punkt wyjścia; hist
 
 1. Wybierz **Ruszamy z Iksikiem** albo przygodę z mapy. Wszystkie 30 zadań jest dostępnych od razu.
 2. Kliknij dostępny składnik. Na komputerze możesz też przeciągnąć go **za małą strzałkę** na drugą stronę równania. Dotykanie przycisków wystarcza na telefonie.
-3. Przeczytaj zaplanowane działanie i potwierdź **Zrób to po obu stronach**. Możesz anulować lub później cofnąć ruch.
+3. Przeczytaj zaplanowane działanie i potwierdź **Zrób to po obu stronach**. Obejrzyj animowany pokaz. Możesz anulować plan lub później cofnąć ruch.
 4. Skorzystaj z **Zamień strony**, **Połącz składniki** lub **Podziel obie strony**, jeśli są dostępne.
 5. Gdy po lewej zostanie samo x, oblicz prawą stronę i wpisz odpowiedź. Gra pokaże sprawdzenie w oryginalnym równaniu.
 
 Pan Iksik podpowiada kolejny ruch i potrafi go podświetlić. Za każdą rozwiązaną przygodę dostajesz jedną gwiazdkę; powtórzenie nie dodaje kolejnej. Podpowiedzi, cofanie i pomyłki nie odbierają gwiazdek. Przy błędnej odpowiedzi gra pokazuje wartości obu stron po podstawieniu proponowanego x. Nie ma limitu czasu.
+
+## Animacje równania
+
+Po zatwierdzeniu ruchu Iksik pokazuje 3–4 etapy bezpośrednio na tablicy:
+
+- **Przenoszenie składnika:** podświetlenie wyboru, identyczne odwrotne działanie po obu stronach, przekreślenie pary dającej zero i skrócony zapis ze zmienionym znakiem. Nowe kafelki pojawiają się razem, a pozostałe płynnie zajmują miejsce.
+- **Zamiana stron:** całe grupy kafelków przemieszczają się na drugą stronę znaku równości, zachowując znaki.
+- **Łączenie składników:** Iksiki i liczby zbierają się w osobne grupy, a każda grupa łączy się w jeden kafelek.
+- **Dzielenie:** nawiasy obejmują całe obie strony; potem widać równe grupy i wartość jednego x. Dla `2x = 18 − 4` pokaz najpierw liczy całą prawą stronę (`14`), a następnie pokazuje dwie grupy po `7`.
+
+**Pauza / Odtwórz** zatrzymuje i wznawia pokaz. Numerowane kroki i strzałki pozwalają oglądać go ręcznie; wybranie kroku zatrzymuje automatyczne odtwarzanie. **Wolniej** wydłuża czas oglądania. **Zakończ pokaz** od razu odsłania dalszą część zadania. **Pokaż ostatni ruch jeszcze raz** powtarza film, także po odświeżeniu strony, bez dopisywania ruchu do historii.
+
+Zatwierdzony ruch zapisuje się raz, przed pokazem. Nawigacja, cofnięcie lub rozpoczęcie od nowa zatrzymują film i sprzątają animacje. Powrót do ukrytej wcześniej karty wymaga wznowienia pokazu. Przy systemowym ograniczeniu ruchu etapy wyświetlają się bez przemieszczania kafelków, a pokaz zaczyna się zatrzymany.
 
 Przycisk **♫** włącza opcjonalny, krótki dźwięk sukcesu. Domyślnie jest wyłączony. Efekty wizualne respektują systemowe ustawienie ograniczenia ruchu. Klawiatura: Tab wybiera przyciski, Enter lub spacja je uruchamia. Wartość x można wpisać i zatwierdzić Enterem.
 
@@ -65,11 +78,13 @@ npm test
 npm run check
 ```
 
-Osiem testów sprawdza kompletność 30 zadań, rozwiązania, zachowanie równości przez każdy oferowany ruch na zalecanych trasach, przenoszenie z przeciwnym znakiem, odejmowane x, dzielenie obu stron, grupowanie oraz walidację odpowiedzi i zapisu. Kontrola `check` sprawdza składnię wszystkich modułów i kompletność zasobów.
+Dwanaście testów sprawdza kompletność 30 zadań, rozwiązania, zachowanie równości przez każdy oferowany ruch na zalecanych trasach, przenoszenie z przeciwnym znakiem, odejmowane x, dzielenie obu stron, grupowanie oraz walidację odpowiedzi i zapisu. Dodatkowe testy pokazów sprawdzają równoważność każdego etapu dla wszystkich oferowanych ruchów na zalecanych trasach 30 zadań, poprawne znoszenie składników, dzielenie całego wyrażenia, zachowanie znaków przy zamianie stron i brak zmiany stanu przez powtórkę. Kontrola `check` sprawdza składnię wszystkich modułów i kompletność zasobów.
 
 Nie ma kroku budowania. Śledzony w Git katalog **`dist/`** zawiera gotową stronę. Można udostępnić go na dowolnym hostingu statycznym serwującym `.mjs` jako JavaScript. `npm start` uruchamia ten sam lokalny serwer. `.openai/hosting.json` służy do publikacji Sites; lokalna gra go nie wymaga.
 
 W przeglądarce Brave sprawdzono klikanie i klawiaturę, błędny i poprawny wynik, podstawienie, gwiazdki, podpowiedź, cofanie, przejście do kolejnej przygody, mapę oraz zachowanie postępów po odświeżeniu. Ręcznie rozwiązano zadania 1, 9, 16, 21 i 30, obejmujące wszystkie rozdziały. Układ sprawdzono również w emulowanym widoku 390 × 844 px; nie jest to test na fizycznym telefonie. Przeciąganie jest dodatkiem do pełnej obsługi kliknięciami i klawiaturą.
+
+Pokazy sprawdzono ręcznie w Brave: wszystkie cztery rodzaje przekształceń, pauzę i wznowienie, numerowane kroki, strzałki, wolniejsze tempo, automatyczne zakończenie, pominięcie, powtórkę bez nowego wpisu w historii, cofnięcie podczas pokazu oraz powtórkę po odświeżeniu. Pokaz dzielenia sprawdzono też w emulowanym widoku 390 × 844 px.
 
 ## Postępy i przenoszenie zapisu
 
@@ -84,6 +99,8 @@ Nie dodawaj zapisów graczy do repozytorium; katalog `outputs/` jest ignorowany.
 - `dist/js/lessons.mjs` — 30 autorskich przygód i pięć rozdziałów.
 - `dist/js/engine.mjs` — dokładny model równania, dozwolone operacje, podpowiadana droga i sprawdzanie wartości.
 - `dist/js/app.mjs` — interfejs, kroki, mapy, podpowiedzi, eksport i import.
+- `dist/js/sequence.mjs` — matematyczne etapy pokazów, wyliczane z modelu równania.
+- `dist/js/motion.mjs` — animacja kafelków, pauza, kroki, wolniejsze tempo i ograniczenie ruchu.
 - `dist/js/state.mjs` — walidowany zapis, odtwarzany przez operacje modelu.
 - `dist/js/art.mjs` — autorski Pan Iksik i miasteczko w SVG; `dist/favicon.svg` — własna ikona.
 - `dist/styles.css` — responsywna oprawa i efekty; sygnał sukcesu jest syntezowany w Web Audio.
