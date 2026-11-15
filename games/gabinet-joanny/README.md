@@ -1,5 +1,7 @@
 # Gabinet Joanny — Prywatne Archiwum Logiki
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Osobista gra dla Joanny Bukowskiej-Chlebus: elegancki, wieczorny gabinet z **32 autorskimi łamigłówkami dla dorosłych**. Klimat Harry’ego Pottera i Snape’a łączy się z Czarodziejką z Księżyca, Super Pig oraz nadzwyczaj poważną sprawą kartofli.
 
 Gra ćwiczy dedukcję, rozpoznawanie reguł, logikę warunkową, wyobraźnię przestrzenną i pracę z hipotezami. Zadania inspirowane są gatunkiem logicznych łamigłówek; nie pochodzą z testów Mensy i nie służą do pomiaru IQ.

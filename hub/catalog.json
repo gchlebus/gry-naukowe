@@ -1,0 +1,89 @@
+{
+  "homeUrl": "https://gry-naukowe.gchlebus.chatgpt.site",
+  "games": [
+    {
+      "id": "kaczy-kod",
+      "name": "Kaczy Kod",
+      "category": "programowanie",
+      "label": "Programowanie",
+      "age": "Od 7 lat",
+      "color": "sage",
+      "art": "duck.svg",
+      "tag": "32 przygody",
+      "description": "Zaplanuj drogę kaczki. Odkrywaj pętle, warunki i własne funkcje.",
+      "url": "https://kaczy-kod.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "sklepik-kucykow",
+      "name": "Sklepik Kucyków",
+      "category": "matematyka",
+      "label": "Matematyka",
+      "age": "Od 7 lat",
+      "color": "pink",
+      "art": "sklepik.webp",
+      "tag": "Cztery działania",
+      "description": "Otwórz bajkowy sklepik. Dodawaj, odejmuj, mnóż i dziel z kucykami.",
+      "url": "https://sklepik-kucykow.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "kucykowa-poczta",
+      "name": "Kucykowa Poczta",
+      "category": "pisanie",
+      "label": "Pisanie",
+      "age": "Od 7 lat",
+      "color": "lavender",
+      "art": "post.svg",
+      "tag": "12 tras z listami",
+      "description": "Dostarczaj listy, poznaj układ palców i pisz dokładniej na klawiaturze.",
+      "url": "https://kucykowa-poczta.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "pan-iksik",
+      "name": "Pan Iksik",
+      "category": "matematyka",
+      "label": "Matematyka",
+      "age": "Od około 7 lat",
+      "color": "mint",
+      "art": "iksik.svg",
+      "tag": "30 zagadek z x",
+      "description": "Poznaj tajemniczą liczbę. Pomóż Iksikowi zachować równowagę równania.",
+      "url": "https://pan-iksik.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "kostka-zielone-wzgorze",
+      "name": "Kostka z Zielonego Wzgórza",
+      "category": "przestrzen",
+      "label": "Wyobraźnia przestrzenna",
+      "age": "Od 7 lat",
+      "color": "sand",
+      "art": "avonlea.webp",
+      "tag": "Własna kostka 3 × 3",
+      "description": "Układaj swoją kostkę krok po kroku w spokojnym świecie Zielonego Wzgórza.",
+      "url": "https://kostka-zielone-wzgorze.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "atelier-lalek",
+      "name": "Atelier Lalek",
+      "category": "kreatywnosc",
+      "label": "Kreatywność",
+      "age": "Od 7 lat",
+      "color": "peach",
+      "art": "atelier.svg",
+      "tag": "Twój salon stylizacji",
+      "description": "Dobieraj fryzury, makijaż i stroje. Zapisuj swoje ulubione stylizacje.",
+      "url": "https://atelier-lalek.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "gabinet-joanny",
+      "name": "Gabinet Joanny",
+      "category": "logika",
+      "label": "Logika dla dorosłych",
+      "age": "Dla dorosłych",
+      "color": "night",
+      "art": "gabinet.webp",
+      "tag": "32 logiczne tajemnice",
+      "description": "Wieczór ze Snape’em, księżycową magią i nieoczywistą dedukcją. Osobista kolekcja łamigłówek.",
+      "url": "https://gabinet-joanny.gchlebus.chatgpt.site"
+    }
+  ]
+}

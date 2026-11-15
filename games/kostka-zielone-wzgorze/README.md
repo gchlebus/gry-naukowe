@@ -1,5 +1,7 @@
 # Kostka z Zielonego Wzgórza
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Polska gra dla dziecka od około 7 lat i rodzica: pomaga ułożyć **własną, fizyczną kostkę 3×3**. Rudowłosa Ania, kwitnący sad, oryginalny spokojny walczyk i rozkwitający ogród za każdy sprawdzony etap. Bez wyścigu na czas.
 
 [Otwórz grę](https://kostka-zielone-wzgorze.gchlebus.chatgpt.site) · [Zasoby i ich pochodzenie](ASSETS.md)

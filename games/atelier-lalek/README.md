@@ -1,5 +1,7 @@
 # Atelier Lalek
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Kreatywny salon dla dziecka od około 7 lat: cztery lalki, fryzury, opcjonalne farbowanie, kosmetyki widoczne bezpośrednio na twarzy, dziesięć paznokci, ubrania, buty i album własnych pomysłów. Bez punktów, limitu czasu i zakupów.
 
 [Otwórz grę](https://atelier-lalek.gchlebus.chatgpt.site) · [Grafika i dźwięki](ASSETS.md)

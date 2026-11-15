@@ -1,5 +1,7 @@
 # Pan Iksik — Przygoda z niewiadomą
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Gra dla dzieci od około 7 lat, najlepiej początkowo z rodzicem. Pomaga zrozumieć, jak przekształcać proste równania, aby po lewej stronie zostało samo **x**. Zawiera 30 przygód w pięciu rozdziałach. Pierwsze zadania wymagają tylko dodawania i odejmowania; późniejsze wprowadzają mnożenie i dzielenie.
 
 ## Czego uczy

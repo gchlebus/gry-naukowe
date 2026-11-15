@@ -4,6 +4,20 @@ Gry do wspólnego odkrywania, eksperymentowania i nauki — dla dzieci i dorosł
 
 Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolnej technologii i ma własne zależności oraz instrukcję uruchomienia. W głównym katalogu nie ma wspólnego środowiska ani obowiązkowego menedżera pakietów.
 
+## Wspólna strona startowa
+
+**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — wszystkie siedem gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
+
+Możesz zapisać ten adres w zakładkach przeglądarki. Gry zachowują swoje dotychczasowe adresy i zapisane na nich postępy.
+
+Lokalne uruchomienie katalogu (Node.js ≥ 22.13.0, bez instalowania zależności), z głównego katalogu repozytorium:
+
+```bash
+node hub/scripts/serve.mjs
+```
+
+Otwórz **http://localhost:5180**. Kafelki prowadzą do opublikowanych wersji gier; lokalne uruchomienie każdej gry opisuje jej własny README. Zatrzymanie: **Ctrl+C**. [Dokumentacja katalogu i dodawania kolejnych gier](hub/README.md).
+
 ## Gry
 
 | Gra                           | Czego uczy                                                                               | Technologia                                                       | Uruchomienie                                                               |
@@ -37,6 +51,10 @@ Szczegóły wymagań, testowania, budowania i pracy z Microduckiem znajdziesz w 
 gry-naukowe/
 ├── README.md
 ├── CONTRIBUTING.md
+├── hub/                    # strona startowa i katalog wszystkich gier
+│   ├── README.md
+│   ├── catalog.json
+│   └── dist/
 └── games/
     ├── kaczy-kod/
     │   ├── README.md
@@ -65,6 +83,6 @@ gry-naukowe/
 
 ## Dodawanie kolejnej gry
 
-Utwórz `games/nazwa-gry/`, dodaj kompletny kod i README z wymaganiami oraz komendami uruchomienia, a następnie dopisz grę do powyższej tabeli. Każdy projekt powinien dać się uruchomić z własnego katalogu bez instalowania innych gier.
+Utwórz `games/nazwa-gry/`, dodaj kompletny kod i README z wymaganiami oraz komendami uruchomienia, a następnie dopisz grę do powyższej tabeli oraz do `hub/catalog.json`. Następnie uruchom `cd hub && npm run sync`, aby zaktualizować stronę główną i menu wszystkich gier (szczegóły w [README katalogu](hub/README.md)). Każdy projekt powinien dać się uruchomić z własnego katalogu bez instalowania innych gier.
 
 Dokładne zasady i szablon instrukcji: [CONTRIBUTING.md](CONTRIBUTING.md).

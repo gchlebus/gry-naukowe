@@ -1,5 +1,7 @@
 # Kaczy Kod
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Polska aplikacja do wspólnej nauki programowania z dzieckiem od 7 lat. Trzydzieści dwie przygody, edytor klocków z pętlami i warunkami, animowana plansza, odtwarzanie krok po kroku, polski lektor przeglądarkowy, lokalny zapis i pliki do przenoszenia programów. Lektor zależy od głosów dostępnych w systemie.
 
 ## Uruchomienie lokalne (macOS i Linux)

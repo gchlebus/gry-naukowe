@@ -1,5 +1,7 @@
 # Kucykowa Poczta
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Polska gra do nauki pisania na klawiaturze dla dziecka od około 7 lat. Figa dostarcza listy: każda poprawna literka przesuwa kucyka do skrzynki. Ćwiczymy prawidłowe palce, dokładność i płynne tempo. Autorskie kucyki i ilustracje SVG; nie jest to oficjalna gra My Little Pony.
 
 [Otwórz grę](https://kucykowa-poczta.gchlebus.chatgpt.site) — hosting Sites jest prywatny dla właściciela. Wersja lokalna nie wymaga logowania ani kont ChatGPT/Suno.

@@ -1,3 +1,5 @@
+import GameNavigation from "./game-navigation";
+import "./game-navigation.css";
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
@@ -11,7 +13,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pl">
-      <body>{children}</body>
+      <body><GameNavigation />{children}</body>
     </html>
   );
 }

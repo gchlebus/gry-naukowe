@@ -1,5 +1,7 @@
 # Sklepik Kucyków
 
+[Wszystkie gry — strona główna](https://gry-naukowe.gchlebus.chatgpt.site) · U góry gry znajdziesz też powrót do katalogu i menu „Zmień grę”.
+
 Polska gra matematyczna do wspólnej zabawy z dzieckiem od około 7 lat. Pomagamy sześciu autorskim kucykom w małym sklepiku: liczymy zakupy, wydajemy resztę, pakujemy równe zestawy i dzielimy towary po równo. Zadania są losowane, więc można grać wielokrotnie.
 
 [Otwórz grę online](https://sklepik-kucykow.gchlebus.chatgpt.site) — wersja Sites jest prywatna dla właściciela. Uruchomienie lokalne poniżej nie wymaga logowania, konta ChatGPT ani Suno.
