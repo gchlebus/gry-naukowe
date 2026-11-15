@@ -14,6 +14,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 | [Kostka z Zielonego Wzgórza](games/kostka-zielone-wzgorze/) | Układanie własnej kostki 3×3: 8 etapów, animowane obroty, orientacja przestrzenna i cierpliwość; od 7 lat | React, TypeScript, Vinext/Vite, Three.js, cubejs | [Instrukcja](games/kostka-zielone-wzgorze/README.md#uruchomienie-lokalne) |
 | [Atelier Lalek](games/atelier-lalek/) | Kreatywne stylizacje: fryzury, kolory, makijaż, paznokcie, ubrania, buty i album pomysłów; od 7 lat | React, TypeScript, Vinext/Vite, warstwowe SVG | [Instrukcja](games/atelier-lalek/README.md#uruchomienie-lokalne) |
 | [Gabinet Joanny](games/gabinet-joanny/) | 32 autorskie łamigłówki dla dorosłych: dedukcja, matryce, szyfry, nonogramy i geometria; 3 poziomy trudności | HTML, CSS, JavaScript (ES modules), Web Audio; bez zależności | [Instrukcja](games/gabinet-joanny/README.md#uruchomienie-lokalne) |
+| [Pan Iksik](games/pan-iksik/) | Proste równania z x: 30 przygód, przenoszenie składników, równowaga stron, grupowanie, dzielenie i sprawdzanie przez podstawienie; od około 7 lat | HTML, CSS, JavaScript (ES modules), SVG, Web Audio; bez zależności | [Instrukcja](games/pan-iksik/README.md#uruchomienie-lokalne) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 
@@ -54,6 +55,9 @@ gry-naukowe/
     │   ├── README.md
     │   └── ...
     ├── gabinet-joanny/
+    │   ├── README.md
+    │   └── ...
+    ├── pan-iksik/
     │   ├── README.md
     │   └── ...
     └── kolejna-gra/         # własna technologia i własny README

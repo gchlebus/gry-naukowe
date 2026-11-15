@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f8f5ec" />
+    <meta
+      name="description"
+      content="Pomóż Panu Iksikowi odkrywać niewiadome. 30 interaktywnych zadań z przenoszenia składników i zachowania równowagi równań."
+    />
+    <title>Pan Iksik — Przygoda z niewiadomą</title>
+    <link rel="icon" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Przejdź do gry</a>
+    <div class="shell">
+      <header>
+        <button
+          class="brand"
+          data-act="home"
+          aria-label="Pan Iksik — strona główna"
+        >
+          <span class="brand-x">x<span>✦</span></span
+          ><span>Pan Iksik<small>PRZYGODA Z NIEWIADOMĄ</small></span>
+        </button>
+        <nav aria-label="Menu gry">
+          <button data-act="map">Mapa przygód</button
+          ><button data-act="about">Jak grać?</button>
+        </nav>
+        <div class="header-end">
+          <span class="stars" id="stars">☆ 0 / 30</span
+          ><button
+            class="sound"
+            data-act="sound"
+            id="sound"
+            aria-label="Włącz dźwięki"
+            aria-pressed="false"
+          >
+            ♫
+          </button>
+        </div>
+      </header>
+      <div id="storage" role="status" hidden></div>
+      <main id="main" tabindex="-1"></main>
+      <footer>
+        <span>Małe kroki. Wielkie odkrycia.</span
+        ><button data-act="about">Dla rodzica · zapis gry</button>
+      </footer>
+    </div>
+    <div id="live" class="sr" role="status" aria-live="polite"></div>
+    <div id="confetti" aria-hidden="true"></div>
+    <dialog id="modal" aria-labelledby="modal-title"></dialog>
+    <noscript
+      >Włącz JavaScript, aby Pan Iksik mógł sprawdzać Twoje ruchy.</noscript
+    >
+    <script type="module" src="./js/app.mjs"></script>
+  </body>
+</html>
