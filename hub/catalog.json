@@ -2,6 +2,18 @@
   "homeUrl": "https://gry-naukowe.gchlebus.chatgpt.site",
   "games": [
     {
+      "id": "lesna-akademia",
+      "name": "Leśna Akademia",
+      "category": "szkola",
+      "label": "Przed kartkówką",
+      "age": "Od około 7 lat",
+      "color": "sage",
+      "art": "akademia.svg",
+      "tag": "9 tematów · dwa działy",
+      "description": "List, ortografia, przyroda i matematyka. Poćwicz wybrany temat lub rozwiąż próbną kartkówkę.",
+      "url": "https://lesna-akademia.gchlebus.chatgpt.site"
+    },
+    {
       "id": "kaczy-kod",
       "name": "Kaczy Kod",
       "category": "programowanie",

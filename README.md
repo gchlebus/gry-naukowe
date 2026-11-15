@@ -6,7 +6,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 
 ## Wspólna strona startowa
 
-**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — wszystkie siedem gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
+**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — wszystkie osiem gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
 
 Możesz zapisać ten adres w zakładkach przeglądarki. Gry zachowują swoje dotychczasowe adresy i zapisane na nich postępy.
 
@@ -22,6 +22,7 @@ Otwórz **http://localhost:5180**. Kafelki prowadzą do opublikowanych wersji gi
 
 | Gra                           | Czego uczy                                                                               | Technologia                                                       | Uruchomienie                                                               |
 | ----------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Leśna Akademia](games/lesna-akademia/) | Powtórka przed kartkówką: polski, przyroda, symetria, zadania tekstowe, pieniądze i rachunki do 100; 9 tematów | HTML, CSS, JavaScript (ES modules), SVG, Web Audio; bez zależności | [Instrukcja](games/lesna-akademia/README.md#uruchomienie-lokalne) |
 | [Kaczy Kod](games/kaczy-kod/) | Programowanie z klocków: 32 przygody, while, if/else, własne funkcje i zagadki; od 7 lat | React, TypeScript, Vinext/Vite; eksport do Pythona dla Microducka | [Instrukcja](games/kaczy-kod/README.md#uruchomienie-lokalne-macos-i-linux) |
 | [Sklepik Kucyków](games/sklepik-kucykow/) | Dodawanie, odejmowanie, mnożenie i dzielenie; 3 poziomy, karty w pary; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/sklepik-kucykow/README.md#uruchomienie-lokalne) |
 | [Kucykowa Poczta](games/kucykowa-poczta/) | Pisanie na klawiaturze: 12 tras, palce, dokładność, czas i własne tempo; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/kucykowa-poczta/README.md#uruchomienie-lokalne) |
@@ -56,6 +57,9 @@ gry-naukowe/
 │   ├── catalog.json
 │   └── dist/
 └── games/
+    ├── lesna-akademia/
+    │   ├── README.md
+    │   └── ...
     ├── kaczy-kod/
     │   ├── README.md
     │   ├── package.json
