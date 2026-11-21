@@ -6,7 +6,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 
 ## Wspólna strona startowa
 
-**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — wszystkie osiem gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
+**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — dziewięć gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
 
 Możesz zapisać ten adres w zakładkach przeglądarki. Gry zachowują swoje dotychczasowe adresy i zapisane na nich postępy.
 
@@ -16,13 +16,14 @@ Lokalne uruchomienie katalogu (Node.js ≥ 22.13.0, bez instalowania zależnośc
 node hub/scripts/serve.mjs
 ```
 
-Otwórz **http://localhost:5180**. Kafelki prowadzą do opublikowanych wersji gier; lokalne uruchomienie każdej gry opisuje jej własny README. Zatrzymanie: **Ctrl+C**. [Dokumentacja katalogu i dodawania kolejnych gier](hub/README.md).
+Otwórz **http://localhost:5180**. Biuro Zagadek działa bezpośrednio z serwera katalogu. Pozostałe kafelki prowadzą do opublikowanych gier. Każda gra ma własną instrukcję uruchomienia. Zatrzymanie: **Ctrl+C**. [Dokumentacja katalogu i dodawania kolejnych gier](hub/README.md).
 
 ## Gry
 
 | Gra                           | Czego uczy                                                                               | Technologia                                                       | Uruchomienie                                                               |
 | ----------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | [Leśna Akademia](games/lesna-akademia/) | Powtórka przed kartkówką: polski, przyroda, symetria, zadania tekstowe, pieniądze i rachunki do 100; 9 tematów | HTML, CSS, JavaScript (ES modules), SVG, Web Audio; bez zależności | [Instrukcja](games/lesna-akademia/README.md#uruchomienie-lokalne) |
+| [Biuro Zagadek](games/biuro-zagadek/) | 18 rodzinnych spraw: szukanie różnic, zagadki, sudoku, dedukcja, szyfry i sekwencje; od około 7 lat | HTML, CSS, JavaScript (ES modules), Canvas | [Instrukcja](games/biuro-zagadek/README.md#uruchomienie-lokalne) |
 | [Kaczy Kod](games/kaczy-kod/) | Programowanie z klocków: 32 przygody, while, if/else, własne funkcje i zagadki; od 7 lat | React, TypeScript, Vinext/Vite; eksport do Pythona dla Microducka | [Instrukcja](games/kaczy-kod/README.md#uruchomienie-lokalne-macos-i-linux) |
 | [Sklepik Kucyków](games/sklepik-kucykow/) | Dodawanie, odejmowanie, mnożenie i dzielenie; 3 poziomy, karty w pary; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/sklepik-kucykow/README.md#uruchomienie-lokalne) |
 | [Kucykowa Poczta](games/kucykowa-poczta/) | Pisanie na klawiaturze: 12 tras, palce, dokładność, czas i własne tempo; od 7 lat | React, TypeScript, Vinext/Vite | [Instrukcja](games/kucykowa-poczta/README.md#uruchomienie-lokalne) |
@@ -58,6 +59,9 @@ gry-naukowe/
 │   └── dist/
 └── games/
     ├── lesna-akademia/
+    │   ├── README.md
+    │   └── ...
+    ├── biuro-zagadek/
     │   ├── README.md
     │   └── ...
     ├── kaczy-kod/

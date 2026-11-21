@@ -5,6 +5,15 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../dist/", import.meta.url)),
   arg = process.argv.indexOf("--port"),
   port = arg < 0 ? 5180 : Number(process.argv[arg + 1]);
+const catalog = JSON.parse(await readFile(new URL("../catalog.json", import.meta.url), "utf8"));
+const embedded = new Map();
+for (const game of catalog.games.filter(game => game.embedded)) {
+  const pathname = new URL(game.url).pathname;
+  const deployed = path.join(root, pathname);
+  const hasDeployedFiles = await stat(deployed).then(info => info.isDirectory()).catch(() => false);
+  embedded.set(pathname, hasDeployedFiles ? deployed :
+    fileURLToPath(new URL(`../../games/${game.id}/dist/`, import.meta.url)));
+}
 if (!Number.isInteger(port) || port < 1 || port > 65535)
   throw Error("Podaj poprawny --port.");
 const mime = {
@@ -22,11 +31,16 @@ const server = http.createServer(async (req, res) => {
     const pathname = decodeURIComponent(
       new URL(req.url, "http://localhost").pathname,
     );
-    const file = path.resolve(
-      root,
-      "." + (pathname === "/" ? "/index.html" : pathname),
-    );
-    if (!file.startsWith(root) || !(await stat(file)).isFile()) {
+    if (embedded.has(pathname + "/")) {
+      res.writeHead(308, { Location: pathname + "/" });
+      res.end();
+      return;
+    }
+    const mount = [...embedded.keys()].find(prefix => pathname.startsWith(prefix));
+    const directory = mount ? embedded.get(mount) : root;
+    const relative = pathname.slice(mount?.length ?? 1);
+    const file = path.resolve(directory, relative || "index.html");
+    if (!file.startsWith(directory) || !(await stat(file)).isFile()) {
       res.writeHead(404);
       res.end("Nie znaleziono pliku");
       return;

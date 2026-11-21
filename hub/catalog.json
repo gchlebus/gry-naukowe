@@ -14,6 +14,19 @@
       "url": "https://lesna-akademia.gchlebus.chatgpt.site"
     },
     {
+      "id": "biuro-zagadek",
+      "name": "Biuro Zagadek",
+      "category": "logika-rodzinna",
+      "label": "Logika rodzinna",
+      "age": "Od około 7 lat",
+      "color": "lavender",
+      "art": "biuro.webp",
+      "tag": "18 spraw detektywistycznych",
+      "description": "Szukajcie różnic, rozwiązujcie sudoku i łamcie szyfry z Franią i Fistaszkiem. Zagrajcie w pojedynkę lub we dwoje.",
+      "url": "https://gry-naukowe.gchlebus.chatgpt.site/biuro-zagadek/",
+      "embedded": true
+    },
+    {
       "id": "kaczy-kod",
       "name": "Kaczy Kod",
       "category": "programowanie",
