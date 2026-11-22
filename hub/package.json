@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
+    "build": "npm run check && node scripts/build.mjs",
     "sync": "node scripts/sync.mjs",
     "check": "node scripts/sync.mjs --check && node --check dist/js/app.mjs"
   }

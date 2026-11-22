@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a20">
+  <title>Polish Rush · Cztery miasta</title>
+  <link rel="stylesheet" href="./src/style.css">
+  <script type="importmap">{"imports":{"three":"./src/vendor/three/three.module.min.js"}}</script>
+</head>
+<body>
+  <canvas id="world" aria-label="Trasa wyścigu"></canvas>
+  <div id="shade"></div>
+  <header>
+    <nav class="collection-nav" aria-label="Nawigacja między grami"><a href="https://gry-naukowe.gchlebus.chatgpt.site">↖ Wszystkie gry</a><details><summary>Zmień grę</summary><ul><!-- collection-links:start --><li><a href="https://lesna-akademia.gchlebus.chatgpt.site">Leśna Akademia</a></li><li><a href="https://gry-naukowe.gchlebus.chatgpt.site/biuro-zagadek/">Biuro Zagadek</a></li><li><a href="https://kaczy-kod.gchlebus.chatgpt.site">Kaczy Kod</a></li><li><a href="https://sklepik-kucykow.gchlebus.chatgpt.site">Sklepik Kucyków</a></li><li><a href="https://kucykowa-poczta.gchlebus.chatgpt.site">Kucykowa Poczta</a></li><li><a href="https://pan-iksik.gchlebus.chatgpt.site">Pan Iksik</a></li><li><a href="https://kostka-zielone-wzgorze.gchlebus.chatgpt.site">Kostka z Zielonego Wzgórza</a></li><li><a href="https://atelier-lalek.gchlebus.chatgpt.site">Atelier Lalek</a></li><li><a href="https://gabinet-joanny.gchlebus.chatgpt.site">Gabinet Joanny</a></li><!-- collection-links:end --></ul></details></nav>
+    <div class="brand">PR<span>POLISH RUSH</span></div>
+    <button id="sound" aria-pressed="false">♫ Włącz muzykę</button>
+  </header>
+  <main id="menu">
+    <div class="selection">
+      <h1>Wyścig <em>na czas</em></h1>
+      <section aria-labelledby="route-heading">
+        <div class="section-title"><h2 id="route-heading">Trasa</h2><span id="route-length"></span></div>
+        <div id="cities" class="choices cities"></div>
+        <h3 id="route-name"></h3><p id="route-description"></p>
+      </section>
+      <section aria-labelledby="garage-heading">
+        <div class="section-title"><h2 id="garage-heading">Samochód</h2></div>
+        <div id="cars" class="choices cars"></div>
+      </section>
+      <div class="launch"><button id="start" class="primary" disabled>Ładowanie trasy…</button><b id="best">Brak rekordu</b></div>
+      <p class="controls-hint">Strzałki lub WASD – jazda · Spacja – drift · Shift – dopalacz</p>
+    </div>
+    <figure id="showroom">
+      <img id="car-photo" alt="">
+      <figcaption><h2 id="model-name"></h2><p id="paint"></p></figcaption>
+    </figure>
+  </main>
+  <div id="hud" hidden>
+    <div class="race-top"><div><small id="race-city"></small><strong id="timer">00:00.000</strong><span id="checkpoint">BRAMKA 0 / 4</span></div><button id="pause">Ⅱ Pauza</button></div>
+    <div id="message" aria-live="polite"></div>
+    <canvas id="map" width="200" height="160" aria-label="Mapa trasy"></canvas>
+    <div id="speed"><strong>0</strong><span>KM/H</span><div id="boost-meter"></div><small>SHIFT · DOPALACZ</small></div>
+    <div class="race-help">Strzałki lub WASD – jazda · Spacja – drift · R – restart · Enter – powrót do bramki · Esc – pauza</div>
+    <div id="touch"><button data-key="ArrowLeft" aria-label="W lewo">◀</button><button data-key="ArrowRight" aria-label="W prawo">▶</button><button data-key="ArrowDown">Hamulec</button><button data-key="ArrowUp">Gaz</button></div>
+  </div>
+  <div id="modal" hidden><div class="panel" role="dialog" aria-modal="true" aria-labelledby="result-title">
+    <div class="eyebrow" id="result-label"></div><h2 id="result-title">Pauza</h2><p id="result-detail"></p>
+    <button id="resume" class="primary">Wznów wyścig</button><button id="retry">Spróbuj ponownie</button><button id="garage">Wróć do garażu</button>
+  </div></div>
+  <div id="error" role="alert" hidden></div>
+  <audio id="music" loop preload="none" src="./audio/four-cities.mp3"></audio>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

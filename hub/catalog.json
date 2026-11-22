@@ -109,6 +109,19 @@
       "tag": "32 logiczne tajemnice",
       "description": "Wieczór ze Snape’em, księżycową magią i nieoczywistą dedukcją. Osobista kolekcja łamigłówek.",
       "url": "https://gabinet-joanny.gchlebus.chatgpt.site"
+    },
+    {
+      "id": "polish-rush",
+      "name": "Polish Rush",
+      "category": "wyscigi",
+      "label": "Wyścigi 3D",
+      "age": "Od około 7 lat",
+      "color": "night",
+      "art": "polish-rush.svg",
+      "tag": "4 miasta · 4 samochody",
+      "description": "Wybierz samochód i powalcz o rekord na trasach w Krakowie, Łodzi, Raciborzu i Warszawie.",
+      "url": "https://gry-naukowe.gchlebus.chatgpt.site/polish-rush/",
+      "embedded": true
     }
   ]
 }

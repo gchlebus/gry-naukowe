@@ -3,3 +3,5 @@ outputs/
 .sites-runtime/
 .env*
 .DS_Store
+/dist/biuro-zagadek/
+/dist/polish-rush/

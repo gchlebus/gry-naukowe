@@ -33,7 +33,7 @@ npm run sync
 npm run check
 ```
 
-`check` sprawdza spójność wszystkich wygenerowanych plików, unikalność identyfikatorów, adresy HTTPS, obecność ilustracji i składnię JavaScriptu strony. Publikując katalog w Sites, dołącz `games/biuro-zagadek/dist/` do paczki jako `dist/biuro-zagadek/`. Dzięki temu gra jest dostępna pod adresem kafelka i korzysta z tych samych ustawień dostępu co katalog. Zaktualizowane menu pozostałych gier trafia na ich strony przy publikacji tych gier.
+`check` sprawdza spójność wszystkich wygenerowanych plików, unikalność identyfikatorów, adresy HTTPS, obecność ilustracji i składnię JavaScriptu strony. Przed publikacją uruchom `npm run build` w katalogu `hub/`. Polecenie sprawdza katalog i kopiuje pliki gier oznaczonych `embedded` do `dist/<id>/`. Biuro Zagadek i Polish Rush korzystają z tych samych ustawień dostępu co katalog. Zaktualizowane menu pozostałych gier trafia na ich strony przy publikacji tych gier.
 
 Dodając grę, utwórz jej niezależny projekt w `games/`, dodaj własną instrukcję, wpis w głównym README oraz wpis w `catalog.json`. Umieść ilustrację w `dist/art/` i uruchom `sync`. Nowa kategoria wymaga też dopisania przycisku kategorii w generatorze. Generator obsługuje obecne układy React `app/layout.tsx` oraz gry statyczne `dist/index.html` z linkiem pomijania nawigacji; dla innej technologii dodaj odpowiedni sposób osadzenia tego samego paska.
 

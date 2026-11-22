@@ -6,7 +6,7 @@ Każda gra to **osobny projekt** w katalogu `games/`. Może korzystać z dowolne
 
 ## Wspólna strona startowa
 
-**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — dziewięć gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
+**[Otwórz Naszą Krainę Gier](https://gry-naukowe.gchlebus.chatgpt.site)** — dziesięć gier w jednym miejscu, z filtrami tematycznymi. W każdej grze pasek **„Wszystkie gry”** prowadzi do katalogu, a **„Zmień grę”** pozwala przejść bezpośrednio do innej przygody.
 
 Możesz zapisać ten adres w zakładkach przeglądarki. Gry zachowują swoje dotychczasowe adresy i zapisane na nich postępy.
 
@@ -31,6 +31,7 @@ Otwórz **http://localhost:5180**. Biuro Zagadek działa bezpośrednio z serwera
 | [Atelier Lalek](games/atelier-lalek/) | Kreatywne stylizacje: fryzury, kolory, makijaż, paznokcie, ubrania, buty i album pomysłów; od 7 lat | React, TypeScript, Vinext/Vite, warstwowe SVG | [Instrukcja](games/atelier-lalek/README.md#uruchomienie-lokalne) |
 | [Gabinet Joanny](games/gabinet-joanny/) | 32 autorskie łamigłówki dla dorosłych: dedukcja, matryce, szyfry, nonogramy i geometria; 3 poziomy trudności | HTML, CSS, JavaScript (ES modules), Web Audio; bez zależności | [Instrukcja](games/gabinet-joanny/README.md#uruchomienie-lokalne) |
 | [Pan Iksik](games/pan-iksik/) | Proste równania z x: 30 przygód, przenoszenie składników, równowaga stron, grupowanie, dzielenie i sprawdzanie przez podstawienie; od około 7 lat | HTML, CSS, JavaScript (ES modules), SVG, Web Audio; bez zależności | [Instrukcja](games/pan-iksik/README.md#uruchomienie-lokalne) |
+| [Polish Rush](games/polish-rush/) | Refleks, koordynacja i planowanie zakrętów na czterech trasach; od około 7 lat | Three.js, Web Audio | [Instrukcja](games/polish-rush/README.md) |
 
 ## Pierwsze uruchomienie Kaczego Kodu
 

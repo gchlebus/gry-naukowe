@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{font-family:'DM Sans',sans-serif;color:#f5f8f7;background:#16232b;font-synthesis:none}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer;border:1px solid #ffffff2a;background:#18282bd9;border-radius:8px;padding:12px 16px}button:hover{border-color:#cdff69;background:#2b3d36}button:focus-visible,a:focus-visible{outline:3px solid #d0ff70;outline-offset:3px}a{color:inherit;text-decoration:none}#world,#shade{position:fixed;inset:0;width:100%;height:100%}#shade{pointer-events:none;background:linear-gradient(90deg,#0b151cf5 0%,#0b151ce8 33%,#0b151c38 65%,transparent),linear-gradient(0deg,#0a111b9c,transparent 30%)}header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:24px 38px;border-bottom:1px solid #ffffff16}header>a{font-size:12px;color:#bdc8ca}.brand{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:30px;font-weight:800;color:#d0ff70;display:flex;gap:12px;align-items:center}.brand span{font-style:normal;letter-spacing:3px;font-size:13px;color:white}#sound{font-size:12px;padding:9px 14px}main{position:relative;z-index:1;max-width:650px;padding:32px 38px;height:calc(100dvh - 90px);overflow:auto}.eyebrow{font-size:10px;letter-spacing:3px;color:#d0ff70;font-weight:700}h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,5.3vw,78px);line-height:.99;margin:18px 0 16px;text-transform:uppercase;font-weight:700;letter-spacing:-1px}h1 em{color:#d0ff70;font-style:italic}.intro{font-size:13px;line-height:1.7;color:#aebfc4;margin-bottom:24px}section{margin:18px 0}.section-title{display:flex;justify-content:space-between;font-size:10px;letter-spacing:1.5px;margin-bottom:10px;color:#aebfc4}.choices{display:grid;gap:7px}.cities{grid-template-columns:repeat(4,1fr)}.choices button{text-align:left;border-radius:5px;padding:11px 9px;background:#142329bf}.choices button.active{background:#d0ff70;color:#142219;border-color:#d0ff70}.cities strong{display:block;font-size:13px}.cities small{display:block;font-size:9px;opacity:.65;margin-top:4px}.cars{grid-template-columns:repeat(2,1fr)}.cars button{display:flex;align-items:center;gap:10px;font-size:12px}.cars button small{font-size:9px;display:block;opacity:.65;margin-top:3px}.swatch{width:24px;height:24px;border:1px solid #ffffff40;border-radius:50%;flex-shrink:0;box-shadow:inset 0 5px 5px #ffffff40,inset 0 -5px 8px #0007}#route-description{font-size:11px;color:#91a8ae;line-height:1.5;min-height:32px}.launch{display:flex;gap:18px;align-items:center;margin-top:25px}.primary{background:#d0ff70;color:#142219;border:0;font-weight:700;padding:16px 23px;min-width:190px}.primary:hover{background:#e1ffa4}.primary span{margin-left:24px}.launch b{font-size:11px;display:block}.launch small{font-size:9px;color:#98acb1;display:block;max-width:200px;line-height:1.6;margin-top:5px}.prototype{font-size:8px;letter-spacing:1px;color:#778d93;margin-top:20px}#track-badge{position:fixed;right:40px;bottom:42px;text-align:right}#track-badge span{color:#d0ff70;font-size:11px;letter-spacing:3px}#track-badge h2{font-family:'Barlow Condensed';font-size:38px;text-transform:uppercase;margin:8px 0}#track-badge p{font-size:9px;letter-spacing:2px;color:#bdccce}[hidden]{display:none!important}.race-top{position:absolute;top:100px;left:35px;right:35px;display:flex;justify-content:space-between;align-items:start}.race-top small,.race-top span{display:block;font-size:11px;letter-spacing:2px}.race-top strong{display:block;font-size:40px;font-variant-numeric:tabular-nums;text-shadow:0 2px 10px #000}.race-top span{color:#d0ff70}#message{position:absolute;top:32%;width:100%;text-align:center;font-family:'Barlow Condensed';font-weight:700;font-size:64px;text-shadow:0 3px 20px #000;color:#d0ff70;pointer-events:none}#speed{position:absolute;right:40px;bottom:50px;text-align:right}#speed strong{font-family:'Barlow Condensed';font-style:italic;font-size:85px;line-height:1}#speed span{display:block;font-size:11px;letter-spacing:4px}#speed small{font-size:9px;color:#d0ff70}#boost-meter{height:4px;background:#d0ff70;width:120px;margin:12px 0 6px}#map{position:absolute;bottom:60px;left:25px;background:#0d1d2399;border:1px solid #ffffff20;border-radius:8px}.race-help{position:absolute;bottom:18px;width:100%;text-align:center;color:#d1dcdf;font-size:10px;text-shadow:0 1px 4px black}#modal{position:fixed;inset:0;background:#09141b9c;backdrop-filter:blur(12px);z-index:5;display:grid;place-items:center}.panel{max-width:440px;width:90%;background:#15252c;border:1px solid #ffffff2a;padding:36px;border-radius:15px;text-align:center}.panel h2{font-family:'Barlow Condensed';font-size:42px;margin:15px 0}.panel p{color:#aebfc4;line-height:1.6;font-size:14px}.panel button{display:block;width:100%;margin-top:10px}#error{position:fixed;inset:20%;z-index:20;background:#17272e;padding:30px;line-height:1.7}#touch{display:none}body.racing #shade{background:linear-gradient(0deg,#09151b99,transparent 24%,transparent 70%,#09151b66)}@media(max-height:800px) and (min-width:761px){main{padding-top:20px}h1{font-size:54px;margin:12px 0}.intro{margin:8px 0 15px}section{margin:12px 0}.launch{margin-top:16px}.prototype{margin-top:10px}}@media(max-width:760px){header{padding:14px 18px}.brand span{display:none}main{padding:24px 20px;height:calc(100dvh - 65px);max-width:540px}#shade{background:linear-gradient(90deg,#0b151cf0,#0b151cc0)}h1{font-size:56px}#track-badge{display:none}.launch{flex-wrap:wrap;gap:10px}.race-top{top:80px;left:20px;right:20px}.race-help{display:none}#map{width:130px;height:104px;bottom:115px;left:15px}#speed{right:20px;bottom:120px}#speed strong{font-size:60px}#touch{display:flex;position:fixed;bottom:18px;left:15px;right:15px;gap:10px;justify-content:space-between}#touch button{touch-action:none;user-select:none;min-width:60px;height:60px;background:#172a32db}.race-top strong{font-size:32px}}
+
+/* A wide garage view keeps the selected car and its controls together. */
+#menu {
+  width: 100%; max-width: none; display: grid;
+  grid-template-columns: minmax(360px, .8fr) minmax(360px, 1.2fr);
+  align-items: center; gap: clamp(20px, 4vw, 80px);
+  padding: 26px clamp(24px, 5vw, 90px); box-sizing: border-box;
+}
+body:not(.racing) #shade {
+  background: linear-gradient(90deg, #0a141bf9, #0d1921ec 39%, #10202b95 70%),
+    linear-gradient(0deg, #06111ce6, transparent 75%);
+}
+.selection { width: 100%; max-width: 560px; }
+.section-title { align-items: baseline; }
+.section-title h2 { margin: 0; color: #e0eceb; font-size: 13px; }
+#route-name { margin: 16px 0 3px; font-size: 15px; }
+#route-description { margin: 0; min-height: 2.9em; color: #b5c7cb; font-size: 12px; }
+.controls-hint { color: #adbec2; font-size: 11px; line-height: 1.6; }
+#showroom { position: relative; margin: 0; padding-bottom: 16px; align-self: center; }
+#car-photo { display: block; width: 100%; height: clamp(220px, 30vw, 460px); object-fit: contain;
+  filter: drop-shadow(0 18px 8px rgba(0,0,0,.42)); }
+#showroom figcaption { padding: 12px 0 0 16px; border-left: 2px solid #d0ff70; }
+#model-name { font: 700 clamp(28px, 3.3vw, 54px)/1 'Barlow Condensed',sans-serif; margin: 0; }
+#paint { margin: 6px 0 0; color: #c3d1d3; font-size: 13px; }
+#boost-meter { transform-origin: left; }
+#error { inset: auto 12px 12px; border: 1px solid #856d46; border-radius: 8px; padding: 14px; }
+@media (max-width: 760px) {
+  #menu { display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 12px 18px 30px; }
+  .selection { display: contents; }
+  #menu h1 { order: 0; font-size: 38px; margin: 4px 0; }
+  #showroom { order: 1; display: flex; align-items: center; width: 100%; padding: 0; }
+  #car-photo { width: 58%; height: clamp(95px, 23vw, 160px); }
+  #showroom figcaption { margin-left: 12px; padding: 3px 0 3px 12px; }
+  #model-name { font-size: 24px; }
+  #menu section, #menu .launch, #menu .controls-hint { order: 2; margin: 0; }
+  #menu .launch { margin-top: 5px; }
+  .cities button { padding: 10px 5px; }
+}
+
+.collection-nav { display:flex; align-items:center; gap:1rem; color:#bdc8ca; font-size:.8rem; }
+.collection-nav details { position:relative; }
+.collection-nav summary { cursor:pointer; }
+.collection-nav ul { position:absolute; top:100%; left:0; background:#13242c; list-style:none; padding:.5rem; margin:.4rem 0; border-radius:.5rem; width:13rem; max-height:60vh; overflow:auto; }
+.collection-nav li a { display:block; padding:.5rem; }
+.collection-nav a:hover, .collection-nav summary:hover { color:#d0ff70; }
+@media(max-width:520px){ .collection-nav {gap:.55rem;font-size:.72rem;} }
